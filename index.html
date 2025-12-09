@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Roleta - Final</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000; --panel:#0d0d0f; --muted:#181818; --accent:#00eaff; --white:#fff;
+}
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{margin:0;background:var(--bg);color:var(--white);display:flex;justify-content:center;padding:28px}
+.wrapper{width:100%;max-width:720px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.title{font-size:22px;font-weight:700}
+.controls{display:flex;gap:10px;align-items:center}
+.btn{background:linear-gradient(45deg,var(--accent),#0078ff);border:none;color:#000;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}
+.smallBtn{background:#111;border:1px solid #222;color:var(--white);padding:8px 12px;border-radius:10px;cursor:pointer}
+.board{display:flex;flex-direction:column;align-items:center;gap:12px}
+.pointer{width:0;height:0;border-left:20px solid transparent;border-right:20px solid transparent;border-bottom:36px solid var(--accent);filter:drop-shadow(0 0 8px var(--accent));}
+.canvasWrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+#wheel{background:var(--panel);border-radius:50%;box-shadow:0 0 28px #001f28;border:4px solid #111;display:block;transition:box-shadow .2s}
+.btnMain{padding:12px 26px;border-radius:12px;border:none;background:var(--accent);color:#000;font-weight:800;cursor:pointer;margin-top:6px}
+.inputs{background:var(--panel);padding:14px;border-radius:12px;margin-top:10px;box-shadow:0 0 12px #00eaff22}
+.row{display:flex;gap:8px}
+.input, select{flex:1;padding:10px;border-radius:8px;border:none;background:var(--muted);color:var(--white);outline:none}
+.addBtn{padding:10px 12px;border-radius:8px;border:none;background:#fff;color:#000;cursor:pointer}
+.names{margin-top:12px}
+.nameItem{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:#131313;margin-bottom:8px}
+.trashBtn{background:transparent;border:none;cursor:pointer;padding:6px}
+.trashBtn svg{width:18px;height:18px;fill:#fff}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.checkboxRow{display:flex;align-items:center;gap:8px;color:#bfbfbf}
+.historyBtn{background:#0b0b0b;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:8px;cursor:pointer}
+
+/* popup */
+.popupWrap{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);z-index:50}
+.popup{background:#090909;padding:20px;border-radius:12px;width:90%;max-width:420px;box-shadow:0 10px 40px rgba(0,0,0,.6);transform:translateY(10px);opacity:0;transition:all .25s}
+.popup.show{transform:translateY(0);opacity:1}
+.popup h3{margin-bottom:8px}
+.historyList{max-height:300px;overflow:auto;margin-top:8px}
+.historyItem{background:#101010;padding:10px;border-radius:8px;margin-bottom:8px}
+
+/* responsive */
+@media (max-width:480px){
+  .row{flex-direction:column}
+  .btnMain{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="title">Roleta — Versão Final</div>
+    <div class="controls">
+      <button class="smallBtn" id="clearNamesBtn" title="Limpar nomes">Limpar nomes</button>
+      <button class="historyBtn" id="openHistory">Histórico</button>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="pointer" id="pointerTop" aria-hidden="true"></div>
+
+    <div class="canvasWrap">
+      <canvas id="wheel" width="420" height="420"></canvas>
+      <button id="spin" class="btnMain">Girar Roleta</button>
+    </div>
+
+    <div class="inputs">
+      <div style="margin-bottom:8px;font-size:13px;color:#bfbfbf">Insira um título do seu sorteio</div>
+      <input id="titulo" class="input" placeholder="Insira um título do seu sorteio (ex: Quem lava a louça?)">
+
+      <div style="height:8px"></div>
+      <div style="margin-bottom:8px;font-size:13px;color:#bfbfbf">Valor do prêmio (opcional)</div>
+      <input id="valor" class="input" type="number" placeholder="Deixe vazio se não houver valor (opcional)">
+
+      <div style="height:8px"></div>
+      <div class="row">
+        <input id="novoNome" class="input" placeholder="Adicionar nome">
+        <button id="addBtn" class="addBtn">Adicionar</button>
+      </div>
+
+      <div class="names" id="namesBox">
+        <div style="font-weight:700;margin-bottom:8px">Nomes:</div>
+        <div id="namesList"></div>
+      </div>
+
+      <div class="footer">
+        <label class="checkboxRow"><input id="autosave" type="checkbox"> Salvar nomes</label>
+        <div style="display:flex;gap:8px">
+          <button class="smallBtn" id="exportCsv">Exportar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP vencedor -->
+<div class="popupWrap" id="popupWinner">
+  <div class="popup" id="popupWinnerInner">
+    <h3 id="winTitle">Sorteio</h3>
+    <div id="winText" style="font-size:18px;font-weight:700;margin-bottom:6px"></div>
+    <div id="winDetail" style="color:#bfbfbf;font-size:13px"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button class="btn" id="closeWinner">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP histórico -->
+<div class="popupWrap" id="popupHistory">
+  <div class="popup" id="popupHistoryInner">
+    <h3>Histórico de Sorteios</h3>
+    <div class="historyList" id="historyList"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+      <button class="smallBtn" id="clearHistoryBtn" style="background:#e84e4e;color:#fff;border:none">Limpar</button>
+      <button class="btn" id="closeHistoryBtn">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====== Estado ====== */
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const spinBtn = document.getElementById('spin');
+const addBtn = document.getElementById('addBtn');
+const novoNome = document.getElementById('novoNome');
+const namesList = document.getElementById('namesList');
+const tituloInput = document.getElementById('titulo');
+const valorInput = document.getElementById('valor');
+const pointerTop = document.getElementById('pointerTop');
+const autosave = document.getElementById('autosave');
+const openHistory = document.getElementById('openHistory');
+const popupWinner = document.getElementById('popupWinner');
+const winTitle = document.getElementById('winTitle');
+const winText = document.getElementById('winText');
+const winDetail = document.getElementById('winDetail');
+const closeWinner = document.getElementById('closeWinner');
+const popupHistory = document.getElementById('popupHistory');
+const historyList = document.getElementById('historyList');
+const closeHistoryBtn = document.getElementById('closeHistoryBtn');
+const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+const clearNamesBtn = document.getElementById('clearNamesBtn');
+const exportCsvBtn = document.getElementById('exportCsv');
+
+let names = [];
+let history = [];
+let isSpinning = false;
+
+/* ====== carregar do localStorage ====== */
+if(localStorage.getItem('roleta_names')){
+  try{ names = JSON.parse(localStorage.getItem('roleta_names'))||[] }catch(e){ names=[] }
+}
+if(localStorage.getItem('roleta_history')){
+  try{ history = JSON.parse(localStorage.getItem('roleta_history'))||[] }catch(e){ history=[] }
+}
+autosave.checked = localStorage.getItem('roleta_autosave') === '1';
+
+/* ====== render names ====== */
+function renderNames(){
+  namesList.innerHTML = '';
+  if(names.length===0){
+    namesList.innerHTML = '<div class="small" style="opacity:.6">Nenhum nome</div>';
+    return;
+  }
+  names.forEach((n,i)=>{
+    const div = document.createElement('div');
+    div.className = 'nameItem';
+    div.innerHTML = `<div style="font-weight:600">${escapeHtml(n)}</div>
+      <div>
+        <button class="trashBtn" title="Remover" onclick="removeName(${i})">
+          <svg viewBox="0 0 24 24"><path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h4l1 1h4v2H4V4h4l1-1z"/></svg>
+        </button>
+      </div>`;
+    namesList.appendChild(div);
+  });
+}
+
+/* ====== draw wheel ====== */
+function drawWheel(){
+  const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = Math.min(cx,cy)-8;
+  ctx.clearRect(0,0,w,h);
+  if(names.length===0){
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle='#121212'; ctx.fill();
+    ctx.fillStyle='#8a8a8a'; ctx.font='16px Poppins'; ctx.textAlign='center'; ctx.fillText('Sem nomes',cx,cy);
+    return;
+  }
+  const slice = 2*Math.PI / names.length;
+  for(let i=0;i<names.length;i++){
+    const a1 = i*slice, a2 = (i+1)*slice;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,a1,a2);
+    ctx.closePath();
+    ctx.fillStyle = `hsl(${(i*360)/names.length},70%,45%)`;
+    ctx.fill();
+    // texto
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(a1 + slice/2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 14px Poppins';
+    ctx.fillText(names[i], r*0.6, 6);
+    ctx.restore();
+  }
+}
+
+/* ====== add / remove / clear ====== */
+function addName(){
+  const v = novoNome.value.trim();
+  if(!v) return;
+  if(isSpinning) return;
+  names.push(v);
+  novoNome.value = '';
+  renderNames();
+  drawWheel();
+  saveNamesIfNeeded();
+}
+function removeName(i){
+  if(isSpinning) return;
+  names.splice(i,1);
+  renderNames();
+  drawWheel();
+  saveNamesIfNeeded();
+}
+function clearNames(){
+  if(isSpinning) return;
+  if(!confirm('Limpar todos os nomes?')) return;
+  names = [];
+  renderNames();
+  drawWheel();
+  localStorage.removeItem('roleta_names');
+}
+clearNamesBtn.addEventListener('click', clearNames);
+addBtn.addEventListener('click', addName);
+novoNome.addEventListener('keydown', e=>{ if(e.key==='Enter') addName(); });
+
+function saveNamesIfNeeded(){
+  localStorage.setItem('roleta_autosave', autosave.checked ? '1':'0');
+  if(autosave.checked) localStorage.setItem('roleta_names', JSON.stringify(names));
+}
+autosave.addEventListener('change', saveNamesIfNeeded);
+
+/* ====== spin logic (angle-based correct winner) ====== */
+function rand(min,max){ return Math.random()*(max-min)+min; }
+
+function spin(){
+  if(isSpinning) return;
+  if(names.length===0){ alert('Adicione pelo menos um nome.'); return; }
+
+  isSpinning = true;
+  spinBtn.disabled = true;
+  addBtn.disabled = true;
+  clearNamesBtn.disabled = true;
+
+  // SEMPRE iniciar de 0°
+  const initial = 0;
+  canvas.style.transform = "rotate(0deg)";
+
+  // rotação sempre forte, sempre consistente
+  const randomOffset = rand(0,360);
+  const extraTurns = 5; // sempre rápido e estável
+  const targetDeg = (extraTurns * 360) + randomOffset;
+
+  const duration = 4200;
+  const start = performance.now();
+  const delta = targetDeg - initial;
+
+  const sectorDeg = 360 / names.length;
+  let lastSector = null;
+
+  function animate(now){
+    const t = Math.min(1,(now-start)/duration);
+    const ease = 1 - Math.pow(1-t,3); // easeOutCubic
+    const cur = initial + delta * ease;
+
+    canvas.style.transform = `rotate(${cur}deg)`;
+
+    // feedback do ponteiro
+    const normalized = ((cur % 360)+360)%360;
+    const angleOnWheel = (270 - normalized + 360)%360;
+    const sectorAtTop = Math.floor(angleOnWheel / sectorDeg);
+
+    if(sectorAtTop !== lastSector){
+      pointerTop.style.transform = 'translateY(4px)';
+      setTimeout(()=> pointerTop.style.transform = 'translateY(0)', 70);
+      lastSector = sectorAtTop;
+    }
+
+    if(t < 1){
+      requestAnimationFrame(animate);
+    } else {
+      const final = ((targetDeg % 360)+360)%360;
+      const finalAngleOnWheel = (270 - final + 360)%360;
+      const winnerIndex = Math.floor(finalAngleOnWheel / sectorDeg) % names.length;
+
+      const winnerName = names[winnerIndex];
+
+      let titulo = (tituloInput.value || 'Sorteio').trim();
+      let valorRaw = (valorInput.value || '').trim();
+      let valor = valorRaw === '' ? null : parseInt(valorRaw,10);
+
+      const nowDate = new Date();
+      const displayed = nowDate.toLocaleString('pt-BR');
+      history.push({ titulo, nome: winnerName, valor, when: displayed });
+      localStorage.setItem('roleta_history', JSON.stringify(history));
+
+      saveNamesIfNeeded();
+      showWinner(winnerName, titulo, valor, displayed);
+
+      isSpinning = false;
+      spinBtn.disabled = false;
+      addBtn.disabled = false;
+      clearNamesBtn.disabled = false;
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+/* ====== popup winner ====== */
+function showWinner(name,titulo,valor,when){
+  winTitle.textContent = titulo;
+  winText.innerHTML = `${escapeHtml(name)}${valor!=null ? ` — R$ ${valor}` : ''}`;
+  winDetail.textContent = `Hora: ${when}`;
+  popupWinner.style.display = 'flex';
+  setTimeout(()=> document.getElementById('popupWinnerInner').classList.add('show'),20);
+}
+closeWinner.addEventListener('click',()=>{
+  document.getElementById('popupWinnerInner').classList.remove('show');
+  setTimeout(()=> popupWinner.style.display='none',250);
+});
+
+/* ====== history popup ====== */
+openHistory.addEventListener('click', openHistoryFunc);
+closeHistoryBtn.addEventListener('click', ()=>{
+  document.getElementById('popupHistoryInner').classList.remove('show');
+  setTimeout(()=> popupHistory.style.display='none',250);
+});
+clearHistoryBtn.addEventListener('click', ()=>{
+  if(!confirm('Limpar histórico?')) return;
+  history = [];
+  localStorage.removeItem('roleta_history');
+  openHistoryFunc();
+});
+function openHistoryFunc(){
+  historyList.innerHTML = '';
+  if(history.length===0){
+    historyList.innerHTML = '<div class="small" style="opacity:.7">Nenhum sorteio registrado</div>';
+  } else {
+    for(let i=history.length-1;i>=0;i--){
+      const h = history[i];
+      const div = document.createElement('div'); div.className='historyItem';
+      div.innerHTML = `<div style="font-weight:700">${escapeHtml(h.titulo)}</div>
+        <div style="margin-top:6px">${escapeHtml(h.nome)} ${h.valor!=null?`— R$ ${h.valor}`:''}</div>
+        <div style="color:#bfbfbf;margin-top:6px;font-size:13px">${escapeHtml(h.when)}</div>`;
+      historyList.appendChild(div);
+    }
+  }
+  popupHistory.style.display = 'flex';
+  setTimeout(()=> document.getElementById('popupHistoryInner').classList.add('show'),20);
+}
+
+/* ====== export CSV (names) ====== */
+exportCsvBtn.addEventListener('click', ()=>{
+  if(names.length===0){ alert('Nenhum nome para exportar'); return; }
+  const rows = names.map(n => `"${n.replaceAll('"','""')}"`).join('\n');
+  const blob = new Blob([rows],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'nomes_roleta.csv'; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+});
+
+/* ====== utility ====== */
+function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* ====== init draw & load history ====== */
+renderNames();
+drawWheel();
+if(localStorage.getItem('roleta_history')){
+  try{ history = JSON.parse(localStorage.getItem('roleta_history'))||[] }catch(e){ history=[] }
+}
+
+/* ====== event bindings ====== */
+spinBtn.addEventListener('click', spin);
+window.removeName = removeName; // expose to inline onclick
+window.addName = addName; // if needed elsewhere
+
+// keyboard add
+novoNome.addEventListener('keydown', e=>{ if(e.key==='Enter') addName(); });
+
+// prevent selecting while spinning
+document.addEventListener('selectstart', e=>{ if(isSpinning) e.preventDefault(); });
+
+/* ====== helper: draw initial UI state functions (renderNames defined earlier) ====== */
+function renderNames(){ // re-declare to ensure access after functions above
+  namesList.innerHTML = '';
+  if(names.length===0){ namesList.innerHTML = '<div class="small" style="opacity:.6">Nenhum nome</div>'; return; }
+  names.forEach((n,i)=>{
+    const div = document.createElement('div');
+    div.className = 'nameItem';
+    div.innerHTML = `<div style="font-weight:600">${escapeHtml(n)}</div>
+      <div>
+        <button class="trashBtn" title="Remover" onclick="removeName(${i})">
+          <svg viewBox="0 0 24 24"><path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h4l1 1h4v2H4V4h4l1-1z"/></svg>
+        </button>
+      </div>`;
+    namesList.appendChild(div);
+  });
+}
+
+/* end of file */
+</script>
+</body>
+</html>
