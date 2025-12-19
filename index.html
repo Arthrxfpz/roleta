@@ -1,419 +1,354 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Roleta - Final</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#000; --panel:#0d0d0f; --muted:#181818; --accent:#00eaff; --white:#fff;
-}
-*{box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{margin:0;background:var(--bg);color:var(--white);display:flex;justify-content:center;padding:28px}
-.wrapper{width:100%;max-width:720px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.title{font-size:22px;font-weight:700}
-.controls{display:flex;gap:10px;align-items:center}
-.btn{background:linear-gradient(45deg,var(--accent),#0078ff);border:none;color:#000;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}
-.smallBtn{background:#111;border:1px solid #222;color:var(--white);padding:8px 12px;border-radius:10px;cursor:pointer}
-.board{display:flex;flex-direction:column;align-items:center;gap:12px}
-.pointer{width:0;height:0;border-left:20px solid transparent;border-right:20px solid transparent;border-bottom:36px solid var(--accent);filter:drop-shadow(0 0 8px var(--accent));}
-.canvasWrap{display:flex;flex-direction:column;align-items:center;gap:16px}
-#wheel{background:var(--panel);border-radius:50%;box-shadow:0 0 28px #001f28;border:4px solid #111;display:block;transition:box-shadow .2s}
-.btnMain{padding:12px 26px;border-radius:12px;border:none;background:var(--accent);color:#000;font-weight:800;cursor:pointer;margin-top:6px}
-.inputs{background:var(--panel);padding:14px;border-radius:12px;margin-top:10px;box-shadow:0 0 12px #00eaff22}
-.row{display:flex;gap:8px}
-.input, select{flex:1;padding:10px;border-radius:8px;border:none;background:var(--muted);color:var(--white);outline:none}
-.addBtn{padding:10px 12px;border-radius:8px;border:none;background:#fff;color:#000;cursor:pointer}
-.names{margin-top:12px}
-.nameItem{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:#131313;margin-bottom:8px}
-.trashBtn{background:transparent;border:none;cursor:pointer;padding:6px}
-.trashBtn svg{width:18px;height:18px;fill:#fff}
-.footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.checkboxRow{display:flex;align-items:center;gap:8px;color:#bfbfbf}
-.historyBtn{background:#0b0b0b;border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:8px;cursor:pointer}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Analytics - Business Intelligence</title>
 
-/* popup */
-.popupWrap{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);z-index:50}
-.popup{background:#090909;padding:20px;border-radius:12px;width:90%;max-width:420px;box-shadow:0 10px 40px rgba(0,0,0,.6);transform:translateY(10px);opacity:0;transition:all .25s}
-.popup.show{transform:translateY(0);opacity:1}
-.popup h3{margin-bottom:8px}
-.historyList{max-height:300px;overflow:auto;margin-top:8px}
-.historyItem{background:#101010;padding:10px;border-radius:8px;margin-bottom:8px}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-/* responsive */
-@media (max-width:480px){
-  .row{flex-direction:column}
-  .btnMain{width:100%}
-}
-</style>
+    <style>
+        /* [ESTILIZAÇÃO ORIGINAL PRESERVADA] */
+        .list, .right, .popup-box { scrollbar-width: thin; scrollbar-color: var(--border) transparent; overflow-y: auto !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        :root {
+            --bg: #080a0c; --panel: #111418; --panel-2: #1c2128; --txt: #f0f3f5;
+            --sub: #94a3b8; --green: #10b981; --green-glow: rgba(16, 185, 129, 0.2);
+            --border: #2d333b; --hover: #21262d; --accent: #3b82f6; --pix: #2dd4bf;
+            --card: #f43f5e; --error: #ef4444;
+        }
+        * { box-sizing: border-box; font-family: "Plus Jakarta Sans", sans-serif; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { margin: 0; background: var(--bg); color: var(--txt); overflow-x: hidden; }
+
+        /* HEADER E AUTH */
+        .top-bar {
+            width: 100%; background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(12px);
+            padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, var(--sub)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .auth-section { display: flex; align-items: center; gap: 12px; }
+        .user-pill { 
+            display: none; align-items: center; gap: 10px; background: var(--panel-2); 
+            padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border); cursor: pointer;
+        }
+        .user-pill img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--green); }
+        .btn-google { 
+            background: #fff; color: #000; border: none; padding: 8px 16px; 
+            border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+
+        /* LAYOUT */
+        .app { display: flex; width: 100%; min-height: calc(100vh - 80px); }
+        .left { flex: 1; padding: 40px; }
+        .right { width: 380px; padding: 40px 24px; background: linear-gradient(180deg, var(--panel) 0%, #0d1117 100%); border-left: 1px solid var(--border); height: calc(100vh - 77px); position: sticky; top: 77px; overflow-y: auto; }
+        .vendas-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 15px; }
+        .vh-total { font-size: clamp(32px, 5vw, 42px); font-weight: 800; color: var(--green); letter-spacing: -1px; text-shadow: 0 0 30px var(--green-glow); }
+        .card-main { background: var(--panel); border-radius: 24px; padding: 24px; border: 1px solid var(--border); margin-bottom: 32px; }
+        .list { display: flex; flex-direction: column; gap: 12px; max-height: 480px; overflow-y: auto; }
+        .item { background: var(--panel-2); border-radius: 16px; padding: 16px; display: flex; align-items: center; opacity: 0; transform: translateY(10px); }
+        .item.show { opacity: 1; transform: translateY(0); }
+        .item-icon { width: 44px; height: 44px; background: var(--bg); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: var(--green); }
+        .item-info { flex: 1; }
+        .item-info span { display: block; font-weight: 600; color: #fff; }
+        .item-value { font-weight: 700; margin-right: 15px; }
+        .delete-btn { background: transparent; color: var(--sub); border: none; cursor: pointer; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-box { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 24px; }
+        .chart-title { font-size: 12px; text-transform: uppercase; color: var(--sub); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .day { background: var(--panel-2); padding: 18px; border-radius: 18px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid var(--border); margin-bottom: 14px; }
+        .day.active { border-color: var(--green); background: var(--green-glow); }
+        .add-btn { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; border-radius: 20px; background: var(--green); border: none; font-size: 24px; cursor: pointer; z-index: 100; box-shadow: 0 10px 25px var(--green-glow); }
+        .modal, .popup { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal.show, .popup.show { display: flex; }
+        .modal-box, .popup-box { background: var(--panel); width: 100%; max-width: 450px; border-radius: 30px; padding: 32px; border: 1px solid var(--border); }
+        input { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 16px; border-radius: 14px; color: #fff; margin-bottom: 15px; outline: none; }
+        .btn-confirm { background: var(--green); color: #000; font-weight: 800; padding: 18px; border-radius: 16px; border: none; cursor: pointer; width: 100%; }
+        .pg { display: flex; gap: 10px; margin-bottom: 20px; }
+        .pg button { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--sub); cursor: pointer; font-size: 11px; font-weight: 700; }
+        .pg button.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
+        .toast { position: fixed; bottom: 30px; left: 30px; background: #fff; color: #000; padding: 16px 24px; border-radius: 16px; font-weight: 700; transform: translateY(200px); z-index: 3000; }
+        .toast.show { transform: translateY(0); }
+    </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="header">
-    <div class="title">Roleta — Versão Final</div>
-    <div class="controls">
-      <button class="smallBtn" id="clearNamesBtn" title="Limpar nomes">Limpar nomes</button>
-      <button class="historyBtn" id="openHistory">Histórico</button>
-    </div>
-  </div>
 
-  <div class="board">
-    <div class="pointer" id="pointerTop" aria-hidden="true"></div>
-
-    <div class="canvasWrap">
-      <canvas id="wheel" width="420" height="420"></canvas>
-      <button id="spin" class="btnMain">Girar Roleta</button>
-    </div>
-
-    <div class="inputs">
-      <div style="margin-bottom:8px;font-size:13px;color:#bfbfbf">Insira um título do seu sorteio</div>
-      <input id="titulo" class="input" placeholder="Insira um título do seu sorteio (ex: Quem lava a louça?)">
-
-      <div style="height:8px"></div>
-      <div style="margin-bottom:8px;font-size:13px;color:#bfbfbf">Valor do prêmio (opcional)</div>
-      <input id="valor" class="input" type="number" placeholder="Deixe vazio se não houver valor (opcional)">
-
-      <div style="height:8px"></div>
-      <div class="row">
-        <input id="novoNome" class="input" placeholder="Adicionar nome">
-        <button id="addBtn" class="addBtn">Adicionar</button>
-      </div>
-
-      <div class="names" id="namesBox">
-        <div style="font-weight:700;margin-bottom:8px">Nomes:</div>
-        <div id="namesList"></div>
-      </div>
-
-      <div class="footer">
-        <label class="checkboxRow"><input id="autosave" type="checkbox"> Salvar nomes</label>
-        <div style="display:flex;gap:8px">
-          <button class="smallBtn" id="exportCsv">Exportar</button>
+<div class="top-bar">
+    <div class="logo"><i class="fa-solid fa-chart-line"></i> PRO ANALYTICS</div>
+    <div class="auth-section">
+        <div id="userPill" class="user-pill" onclick="handleLogout()">
+            <img id="userImg" src="" alt="">
+            <span id="userName" style="font-size: 13px; font-weight: 600;"></span>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- POPUP vencedor -->
-<div class="popupWrap" id="popupWinner">
-  <div class="popup" id="popupWinnerInner">
-    <h3 id="winTitle">Sorteio</h3>
-    <div id="winText" style="font-size:18px;font-weight:700;margin-bottom:6px"></div>
-    <div id="winDetail" style="color:#bfbfbf;font-size:13px"></div>
-    <div style="display:flex;justify-content:flex-end;margin-top:12px">
-      <button class="btn" id="closeWinner">OK</button>
-    </div>
-  </div>
-</div>
-
-<!-- POPUP histórico -->
-<div class="popupWrap" id="popupHistory">
-  <div class="popup" id="popupHistoryInner">
-    <h3>Histórico de Sorteios</h3>
-    <div class="historyList" id="historyList"></div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-      <button class="smallBtn" id="clearHistoryBtn" style="background:#e84e4e;color:#fff;border:none">Limpar</button>
-      <button class="btn" id="closeHistoryBtn">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ====== Estado ====== */
-const canvas = document.getElementById('wheel');
-const ctx = canvas.getContext('2d');
-const spinBtn = document.getElementById('spin');
-const addBtn = document.getElementById('addBtn');
-const novoNome = document.getElementById('novoNome');
-const namesList = document.getElementById('namesList');
-const tituloInput = document.getElementById('titulo');
-const valorInput = document.getElementById('valor');
-const pointerTop = document.getElementById('pointerTop');
-const autosave = document.getElementById('autosave');
-const openHistory = document.getElementById('openHistory');
-const popupWinner = document.getElementById('popupWinner');
-const winTitle = document.getElementById('winTitle');
-const winText = document.getElementById('winText');
-const winDetail = document.getElementById('winDetail');
-const closeWinner = document.getElementById('closeWinner');
-const popupHistory = document.getElementById('popupHistory');
-const historyList = document.getElementById('historyList');
-const closeHistoryBtn = document.getElementById('closeHistoryBtn');
-const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-const clearNamesBtn = document.getElementById('clearNamesBtn');
-const exportCsvBtn = document.getElementById('exportCsv');
-
-let names = [];
-let history = [];
-let isSpinning = false;
-
-/* ====== carregar do localStorage ====== */
-if(localStorage.getItem('roleta_names')){
-  try{ names = JSON.parse(localStorage.getItem('roleta_names'))||[] }catch(e){ names=[] }
-}
-if(localStorage.getItem('roleta_history')){
-  try{ history = JSON.parse(localStorage.getItem('roleta_history'))||[] }catch(e){ history=[] }
-}
-autosave.checked = localStorage.getItem('roleta_autosave') === '1';
-
-/* ====== render names ====== */
-function renderNames(){
-  namesList.innerHTML = '';
-  if(names.length===0){
-    namesList.innerHTML = '<div class="small" style="opacity:.6">Nenhum nome</div>';
-    return;
-  }
-  names.forEach((n,i)=>{
-    const div = document.createElement('div');
-    div.className = 'nameItem';
-    div.innerHTML = `<div style="font-weight:600">${escapeHtml(n)}</div>
-      <div>
-        <button class="trashBtn" title="Remover" onclick="removeName(${i})">
-          <svg viewBox="0 0 24 24"><path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h4l1 1h4v2H4V4h4l1-1z"/></svg>
+        <button id="btnLogin" class="btn-google" onclick="handleLogin()">
+            <i class="fa-brands fa-google"></i> Entrar com Google
         </button>
-      </div>`;
-    namesList.appendChild(div);
-  });
-}
+        <button onclick="window.openPopup()" style="background:var(--panel-2); border:1px solid var(--border); color:#fff; width:44px; height:44px; border-radius:12px; cursor:pointer;"><i class="fa-solid fa-layer-group"></i></button>
+    </div>
+</div>
 
-/* ====== draw wheel ====== */
-function drawWheel(){
-  const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = Math.min(cx,cy)-8;
-  ctx.clearRect(0,0,w,h);
-  if(names.length===0){
-    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle='#121212'; ctx.fill();
-    ctx.fillStyle='#8a8a8a'; ctx.font='16px Poppins'; ctx.textAlign='center'; ctx.fillText('Sem nomes',cx,cy);
-    return;
-  }
-  const slice = 2*Math.PI / names.length;
-  for(let i=0;i<names.length;i++){
-    const a1 = i*slice, a2 = (i+1)*slice;
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,a1,a2);
-    ctx.closePath();
-    ctx.fillStyle = `hsl(${(i*360)/names.length},70%,45%)`;
-    ctx.fill();
-    // texto
-    ctx.save();
-    ctx.translate(cx,cy);
-    ctx.rotate(a1 + slice/2);
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 14px Poppins';
-    ctx.fillText(names[i], r*0.6, 6);
-    ctx.restore();
-  }
-}
+<div class="app">
+    <div class="left">
+        <div class="vendas-header">
+            <div>
+                <small style="color:var(--sub); font-weight: 700; text-transform: uppercase;">Desempenho Diário</small>
+                <div id="displayDate" style="font-size: 16px; color: #fff; margin-top: 4px; font-weight: 700;">-- de --</div>
+            </div>
+            <div id="totalDay" class="vh-total">R$ 0,00</div>
+        </div>
 
-/* ====== add / remove / clear ====== */
-function addName(){
-  const v = novoNome.value.trim();
-  if(!v) return;
-  if(isSpinning) return;
-  names.push(v);
-  novoNome.value = '';
-  renderNames();
-  drawWheel();
-  saveNamesIfNeeded();
-}
-function removeName(i){
-  if(isSpinning) return;
-  names.splice(i,1);
-  renderNames();
-  drawWheel();
-  saveNamesIfNeeded();
-}
-function clearNames(){
-  if(isSpinning) return;
-  if(!confirm('Limpar todos os nomes?')) return;
-  names = [];
-  renderNames();
-  drawWheel();
-  localStorage.removeItem('roleta_names');
-}
-clearNamesBtn.addEventListener('click', clearNames);
-addBtn.addEventListener('click', addName);
-novoNome.addEventListener('keydown', e=>{ if(e.key==='Enter') addName(); });
+        <div class="card-main">
+            <h4 style="margin: 0 0 24px 0; font-size: 14px; color: var(--sub); display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-receipt" style="color:var(--green)"></i> Fluxo de Caixa
+            </h4>
+            <div class="list" id="list"></div>
+        </div>
 
-function saveNamesIfNeeded(){
-  localStorage.setItem('roleta_autosave', autosave.checked ? '1':'0');
-  if(autosave.checked) localStorage.setItem('roleta_names', JSON.stringify(names));
-}
-autosave.addEventListener('change', saveNamesIfNeeded);
+        <div class="stats-grid">
+            <div class="chart-box"><div class="chart-title">Vendas por Hora</div><div style="height: 200px;"><canvas id="chart"></canvas></div></div>
+            <div class="chart-box"><div class="chart-title">Meios de Pagamento</div><div style="height: 200px;"><canvas id="payChart"></canvas></div></div>
+        </div>
+    </div>
+    <div class="right">
+        <h4 class="chart-title"><i class="fa-solid fa-history"></i> Linha do Tempo</h4>
+        <div id="days"></div>
+    </div>
+</div>
 
-/* ====== spin logic (angle-based correct winner) ====== */
-function rand(min,max){ return Math.random()*(max-min)+min; }
+<button class="add-btn" onclick="window.openModal()"><i class="fa-solid fa-plus"></i></button>
 
-function spin(){
-  if(isSpinning) return;
-  if(names.length===0){ alert('Adicione pelo menos um nome.'); return; }
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+            <h2 style="margin:0; font-size:20px;">Nova Entrada</h2>
+            <div onclick="window.closeModal()" style="cursor:pointer; color:var(--sub); font-size:24px;">&times;</div>
+        </div>
+        <input id="desc" placeholder="O que foi vendido?">
+        <input id="value" type="tel" placeholder="R$ 0,00" oninput="window.maskMoney(this)" style="font-size:28px; font-weight:800; color:var(--green); text-align: center;">
+        <div class="pg">
+            <button id="pg-dinheiro" class="active" onclick="window.setPg('dinheiro')">Dinheiro</button>
+            <button id="pg-pix" onclick="window.setPg('pix')">Pix</button>
+            <button id="pg-cartao" onclick="window.setPg('cartao')">Cartão</button>
+        </div>
+        <button class="btn-confirm" onclick="window.saveTransaction()">Salvar Transação</button>
+    </div>
+</div>
 
-  isSpinning = true;
-  spinBtn.disabled = true;
-  addBtn.disabled = true;
-  clearNamesBtn.disabled = true;
+<div class="popup" id="deleteConfirmModal">
+    <div class="popup-box" style="text-align: center;">
+        <h2 style="margin:0 0 10px 0; font-size:20px;">Excluir Transação?</h2>
+        <button class="btn-confirm" style="background: var(--card); color: #fff;" id="confirmDeleteBtn">Sim, Excluir</button>
+        <button class="btn-confirm" style="background: transparent; color: var(--sub); margin-top:10px;" onclick="window.closeDeleteModal()">Cancelar</button>
+    </div>
+</div>
 
-  // SEMPRE iniciar de 0°
-  const initial = 0;
-  canvas.style.transform = "rotate(0deg)";
+<div class="toast" id="toast"></div>
 
-  // rotação sempre forte, sempre consistente
-  const randomOffset = rand(0,360);
-  const extraTurns = 5; // sempre rápido e estável
-  const targetDeg = (extraTurns * 360) + randomOffset;
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-  const duration = 4200;
-  const start = performance.now();
-  const delta = targetDeg - initial;
+    const firebaseConfig = {
+        apiKey: "AIzaSyDnJTaRsHHgRUrAZ-ChXClQ417timG2oyQ",
+        authDomain: "analises-pro-a71a7.firebaseapp.com",
+        projectId: "analises-pro-a71a7",
+        storageBucket: "analises-pro-a71a7.firebasestorage.app",
+        messagingSenderId: "74886347610",
+        appId: "1:74886347610:web:6d334865a12f2897f39163",
+        measurementId: "G-JPZHMVKHWX"
+    };
 
-  const sectorDeg = 360 / names.length;
-  let lastSector = null;
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-  function animate(now){
-    const t = Math.min(1,(now-start)/duration);
-    const ease = 1 - Math.pow(1-t,3); // easeOutCubic
-    const cur = initial + delta * ease;
+    let currentUser = null;
+    let dados = {};
+    let diaAtual = getDataLocal();
+    let pg = "dinheiro";
+    let chart, payChart, saleToDelete = null;
 
-    canvas.style.transform = `rotate(${cur}deg)`;
+    // --- FUNÇÕES GLOBAIS (window.x para funcionar no HTML) ---
+    window.handleLogin = () => signInWithPopup(auth, provider);
+    window.handleLogout = () => confirm("Sair da conta?") && signOut(auth);
+    window.openModal = () => { document.getElementById("modal").classList.add("show"); document.getElementById("desc").focus(); };
+    window.closeModal = () => document.getElementById("modal").classList.remove("show");
+    window.setPg = (p) => { 
+        pg = p; 
+        document.querySelectorAll(".pg button").forEach(b => b.classList.remove("active"));
+        document.getElementById("pg-"+p).classList.add("active");
+    };
+    window.closeDeleteModal = () => document.getElementById("deleteConfirmModal").classList.remove("show");
 
-    // feedback do ponteiro
-    const normalized = ((cur % 360)+360)%360;
-    const angleOnWheel = (270 - normalized + 360)%360;
-    const sectorAtTop = Math.floor(angleOnWheel / sectorDeg);
+    // --- MONITOR DE LOGIN ---
+    onAuthStateChanged(auth, (user) => {
+        const pill = document.getElementById("userPill");
+        const btn = document.getElementById("btnLogin");
+        if (user) {
+            currentUser = user;
+            pill.style.display = "flex";
+            btn.style.display = "none";
+            document.getElementById("userName").innerText = user.displayName.split(' ')[0];
+            document.getElementById("userImg").src = user.photoURL;
+            syncFromCloud();
+        } else {
+            currentUser = null;
+            pill.style.display = "none";
+            btn.style.display = "flex";
+            dados = JSON.parse(localStorage.getItem("vendas-pro")) || {};
+            renderAll();
+        }
+    });
 
-    if(sectorAtTop !== lastSector){
-      pointerTop.style.transform = 'translateY(4px)';
-      setTimeout(()=> pointerTop.style.transform = 'translateY(0)', 70);
-      lastSector = sectorAtTop;
+    // --- SINCRONIZAÇÃO CLOUD ---
+    function syncFromCloud() {
+        if (!currentUser) return;
+        onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
+            if (docSnap.exists()) {
+                dados = docSnap.data().vendas || {};
+                renderAll();
+            }
+        });
     }
 
-    if(t < 1){
-      requestAnimationFrame(animate);
-    } else {
-      const final = ((targetDeg % 360)+360)%360;
-      const finalAngleOnWheel = (270 - final + 360)%360;
-      const winnerIndex = Math.floor(finalAngleOnWheel / sectorDeg) % names.length;
-
-      const winnerName = names[winnerIndex];
-
-      let titulo = (tituloInput.value || 'Sorteio').trim();
-      let valorRaw = (valorInput.value || '').trim();
-      let valor = valorRaw === '' ? null : parseInt(valorRaw,10);
-
-      const nowDate = new Date();
-      const displayed = nowDate.toLocaleString('pt-BR');
-      history.push({ titulo, nome: winnerName, valor, when: displayed });
-      localStorage.setItem('roleta_history', JSON.stringify(history));
-
-      saveNamesIfNeeded();
-      showWinner(winnerName, titulo, valor, displayed);
-
-      isSpinning = false;
-      spinBtn.disabled = false;
-      addBtn.disabled = false;
-      clearNamesBtn.disabled = false;
+    async function saveToCloud() {
+        if (currentUser) {
+            await setDoc(doc(db, "users", currentUser.uid), { vendas: dados }, { merge: true });
+        } else {
+            localStorage.setItem("vendas-pro", JSON.stringify(dados));
+        }
     }
-  }
 
-  requestAnimationFrame(animate);
-}
+    // --- LÓGICA DE NEGÓCIO ---
+    function getDataLocal(d=new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
 
-/* ====== popup winner ====== */
-function showWinner(name,titulo,valor,when){
-  winTitle.textContent = titulo;
-  winText.innerHTML = `${escapeHtml(name)}${valor!=null ? ` — R$ ${valor}` : ''}`;
-  winDetail.textContent = `Hora: ${when}`;
-  popupWinner.style.display = 'flex';
-  setTimeout(()=> document.getElementById('popupWinnerInner').classList.add('show'),20);
-}
-closeWinner.addEventListener('click',()=>{
-  document.getElementById('popupWinnerInner').classList.remove('show');
-  setTimeout(()=> popupWinner.style.display='none',250);
-});
+    window.saveTransaction = async () => {
+        const valInput = document.getElementById("value");
+        const v = parseInt(valInput.value.replace(/\D/g,'')); 
+        if(!v) return showToast("⚠️ Digite um valor!");
 
-/* ====== history popup ====== */
-openHistory.addEventListener('click', openHistoryFunc);
-closeHistoryBtn.addEventListener('click', ()=>{
-  document.getElementById('popupHistoryInner').classList.remove('show');
-  setTimeout(()=> popupHistory.style.display='none',250);
-});
-clearHistoryBtn.addEventListener('click', ()=>{
-  if(!confirm('Limpar histórico?')) return;
-  history = [];
-  localStorage.removeItem('roleta_history');
-  openHistoryFunc();
-});
-function openHistoryFunc(){
-  historyList.innerHTML = '';
-  if(history.length===0){
-    historyList.innerHTML = '<div class="small" style="opacity:.7">Nenhum sorteio registrado</div>';
-  } else {
-    for(let i=history.length-1;i>=0;i--){
-      const h = history[i];
-      const div = document.createElement('div'); div.className='historyItem';
-      div.innerHTML = `<div style="font-weight:700">${escapeHtml(h.titulo)}</div>
-        <div style="margin-top:6px">${escapeHtml(h.nome)} ${h.valor!=null?`— R$ ${h.valor}`:''}</div>
-        <div style="color:#bfbfbf;margin-top:6px;font-size:13px">${escapeHtml(h.when)}</div>`;
-      historyList.appendChild(div);
+        const ano = diaAtual.split('-')[0];
+        if(!dados[ano]) dados[ano] = {};
+        if(!dados[ano][diaAtual]) dados[ano][diaAtual] = [];
+
+        dados[ano][diaAtual].push({
+            desc: document.getElementById("desc").value || "Venda Avulsa",
+            valor: v, pg, hora: new Date().toLocaleTimeString("pt-BR", {hour: '2-digit', minute:'2-digit'})
+        });
+
+        await saveToCloud();
+        window.closeModal();
+        document.getElementById("desc").value = "";
+        document.getElementById("value").value = "";
+        showToast("✅ Gravado na nuvem!");
+        renderAll();
+    };
+
+    window.askDelete = (idx) => {
+        saleToDelete = idx;
+        document.getElementById("deleteConfirmModal").classList.add("show");
+    };
+
+    document.getElementById("confirmDeleteBtn").onclick = async () => {
+        const ano = diaAtual.split('-')[0];
+        dados[ano][diaAtual].splice(saleToDelete, 1);
+        await saveToCloud();
+        window.closeDeleteModal();
+        renderAll();
+    };
+
+    function renderAll() {
+        const [y, m, d] = diaAtual.split('-');
+        document.getElementById("displayDate").innerText = new Date(y, m-1, d).toLocaleDateString("pt-BR", {day:'2-digit', month:'long'});
+        renderDays();
+        renderList();
+        renderCharts();
     }
-  }
-  popupHistory.style.display = 'flex';
-  setTimeout(()=> document.getElementById('popupHistoryInner').classList.add('show'),20);
-}
 
-/* ====== export CSV (names) ====== */
-exportCsvBtn.addEventListener('click', ()=>{
-  if(names.length===0){ alert('Nenhum nome para exportar'); return; }
-  const rows = names.map(n => `"${n.replaceAll('"','""')}"`).join('\n');
-  const blob = new Blob([rows],{type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'nomes_roleta.csv'; document.body.appendChild(a); a.click();
-  a.remove(); URL.revokeObjectURL(url);
-});
+    function renderDays() {
+        const div = document.getElementById("days");
+        const ano = diaAtual.split('-')[0];
+        const ordenados = Object.keys(dados[ano] || {}).sort().reverse();
+        div.innerHTML = ordenados.map(dt => {
+            const total = dados[ano][dt].reduce((s,v) => s+v.valor, 0);
+            return `<div class="day ${dt===diaAtual?'active':''}" onclick="window.setDia('${dt}')">
+                <div><b>${dt.split('-')[2]}/${dt.split('-')[1]}</b></div>
+                <span>R$ ${formatCurrency(total/100)}</span>
+            </div>`;
+        }).join('') || '<p style="text-align:center;color:var(--sub)">Vazio</p>';
+    }
 
-/* ====== utility ====== */
-function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+    window.setDia = (d) => { diaAtual = d; renderAll(); };
 
-/* ====== init draw & load history ====== */
-renderNames();
-drawWheel();
-if(localStorage.getItem('roleta_history')){
-  try{ history = JSON.parse(localStorage.getItem('roleta_history'))||[] }catch(e){ history=[] }
-}
+    function renderList() {
+        const list = document.getElementById("list");
+        const ano = diaAtual.split('-')[0];
+        const vendas = dados[ano]?.[diaAtual] || [];
+        let total = 0;
+        list.innerHTML = "";
+        vendas.slice().reverse().forEach((v, i) => {
+            total += v.valor;
+            const icon = v.pg === 'dinheiro' ? 'fa-money-bill' : (v.pg === 'pix' ? 'fa-pix' : 'fa-credit-card');
+            const item = document.createElement("div");
+            item.className = "item show";
+            item.innerHTML = `
+                <div class="item-icon"><i class="fa-solid ${icon}"></i></div>
+                <div class="item-info"><span>${v.desc}</span><small>${v.hora}</small></div>
+                <div class="item-value">R$ ${formatCurrency(v.valor/100)}</div>
+                <button class="delete-btn" onclick="window.askDelete(${vendas.length-1-i})"><i class="fa-solid fa-trash"></i></button>
+            `;
+            list.appendChild(item);
+        });
+        document.getElementById("totalDay").innerText = "R$ " + formatCurrency(total/100);
+    }
 
-/* ====== event bindings ====== */
-spinBtn.addEventListener('click', spin);
-window.removeName = removeName; // expose to inline onclick
-window.addName = addName; // if needed elsewhere
+    function renderCharts() {
+        const ano = diaAtual.split('-')[0];
+        const vendas = dados[ano]?.[diaAtual] || [];
+        const pgData = {dinheiro: 0, pix: 0, cartao: 0};
+        const horaData = Array(24).fill(0);
 
-// keyboard add
-novoNome.addEventListener('keydown', e=>{ if(e.key==='Enter') addName(); });
+        vendas.forEach(v => {
+            pgData[v.pg] += v.valor/100;
+            const h = parseInt(v.hora.split(':')[0]);
+            horaData[h] += v.valor/100;
+        });
 
-// prevent selecting while spinning
-document.addEventListener('selectstart', e=>{ if(isSpinning) e.preventDefault(); });
+        if(chart) chart.destroy();
+        chart = new Chart(document.getElementById("chart"), {
+            type: 'line',
+            data: { labels: horaData.map((_,i)=>i+'h'), datasets: [{data: horaData, borderColor:'#10b981', tension:0.4, fill:true, backgroundColor:'rgba(16,185,129,0.1)'}] },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+        });
 
-/* ====== helper: draw initial UI state functions (renderNames defined earlier) ====== */
-function renderNames(){ // re-declare to ensure access after functions above
-  namesList.innerHTML = '';
-  if(names.length===0){ namesList.innerHTML = '<div class="small" style="opacity:.6">Nenhum nome</div>'; return; }
-  names.forEach((n,i)=>{
-    const div = document.createElement('div');
-    div.className = 'nameItem';
-    div.innerHTML = `<div style="font-weight:600">${escapeHtml(n)}</div>
-      <div>
-        <button class="trashBtn" title="Remover" onclick="removeName(${i})">
-          <svg viewBox="0 0 24 24"><path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h4l1 1h4v2H4V4h4l1-1z"/></svg>
-        </button>
-      </div>`;
-    namesList.appendChild(div);
-  });
-}
+        if(payChart) payChart.destroy();
+        payChart = new Chart(document.getElementById("payChart"), {
+            type: 'doughnut',
+            data: { labels: ['Dinheiro', 'Pix', 'Cartão'], datasets: [{data: [pgData.dinheiro, pgData.pix, pgData.cartao], backgroundColor:['#10b981','#2dd4bf','#f43f5e']}] },
+            options: { responsive:true, maintainAspectRatio:false, cutout:'80%', plugins:{legend:{position:'bottom'}}}
+        });
+    }
 
-/* end of file */
+    // Auxiliares finais
+    window.maskMoney = (i) => {
+        let v = i.value.replace(/\D/g,'');
+        v = (v/100).toFixed(2).replace(".", ",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        i.value = "R$ " + v;
+    };
+    function formatCurrency(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:2}); }
+    function showToast(m){ const t=document.getElementById("toast"); t.innerText=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),3000); }
+    
+    renderAll();
 </script>
+
 </body>
 </html>
