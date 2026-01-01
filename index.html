@@ -1,359 +1,108 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1c1c1c">
-    <title>Revisão - Pagina principal </title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <meta name="version" content="3.4.0">
-  <meta name="description" content="Plataforma principal de matérias, aqui você
-  tem acesso a os melhores conteúdos com qualidade."> <!-- Descrição do site -->
-<meta name="keywords" content="materias, Rio Grande RS"> <!-- Palavras-chave -->
-<meta name="author" content=" Equipe
-Revisão"> <!-- Autor do site -->
-<meta name="robots" content="index, follow"> <!-- Diretrizes para motores de busca -->
-  <link rel="icon" href="favicon.ico.png" type="image/x-icon"> <!-- Favicon padrão -->
-<link rel="apple-touch-icon" href="favicon.ico.png"> <!-- Ícone para dispositivos Apple -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
+    <title>Início|Revisão</title>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
-  
-<div id="overlay" class="overlay"></div>
-<div id="popup1" class="popup">
-  <button class="close-btn" onclick="closePopup('popup1')">X</button>
-  <h1>Sobre</h1>
-  <p> Aplicativo criado no final de maio de 2024 com o simples objetivo de ser
-  uma plataforma apropriada para matérias e conteúdos.</p>
-</div>
 
-    <div class="splash-screen">
-    </div>
- 
- 
-        <div class="navbar">
-
-            <div class="hamburger-menu" id="hamburgerMenu">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-          
-            <div class="navbar-title">Revisão</div>  
-<div class="search-container">
-
-        <div id="search-popup" class="search-popup">
-            <div class="suggestions-wrapper" id="initial-suggestions">
-
-
-                <!-- Adicione mais sugestões aqui -->
-            </div>
-            <ul id="suggestions-list">
-
-                         <a href="#inicio" class="tab-link ">Anotações</a>
-              <a href="#videos9B" class="tab-link ">Videos</a>
-            </ul>
-        </div>
-    </div>
-          
-
-          
-        </div>
-        <div class="tabs-container" id="tabsContainer">
-            <div class="tabs" id="tabs">
-             
-                <a href="#inicio" class="tab-link">Inicio</a>
-                    <a href="#materias" class="tab-link">Matérias</a>
-       
-              
-                <!-- Adicione mais abas conforme necessário -->
-            </div>
-        </div>
-
-        <div class="content" id="content">
-            <div id="inicio" class="tab-content hidden">
-              
-              <div id="welcome-div" class="welcome-container">
-                
-    <h2>Olá!</h2>
-    <p>É bom ter você aqui! <br> Aqui você vê tudo que precisa, Confira abaixo.</p>
-    <button id="close-button">Ok</button>
-  </div>
-
-      
-  
-<div class="contener-main">
-  <h5 data-title="Bem vindo" 
-      data-text="Seja bem vindo!" 
-      data-icon="question">Bem vindo</h5>
-  <h2>Novidades</h2>
-  <p>Estamos de volta com novos conteúdos, fique ligado!</p>
-
-
-</div>
-<div class="contener-main">
-  <h5 data-title="Calendário dos conteúdos" 
-      data-text="Se mantenha em dia com as datas dos principais novos conteúdos
-      atualizados." 
-      data-icon="question">Destaques do momento</h5>
-      
-  <h2>Matérias</h2>
-  <p>Agora essa parte mudou. <br> É possível acessar as matérias clicando abaixo.</p>
-<a href="#materias" class="tab-link"> Matérias </a>
-</div>
-
-
-
-
-           </div>
-               
-          <!--Começo da div de matematica-->
-            <div id="matematica" class="tab-content hidden">
-              <div class="square">
-                <h1> Matemática</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-                        <div id="materias" class="tab-content hidden">
-              <div class="square">
-                <h1> Matemática</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-            <div id="portugues" class="tab-content hidden">
-                
-              <div class="square">
-                <h1> Português</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-              </div>
-            </div>
-            <div id="ciencias" class="tab-content hidden">
-              <div class="square">
-                <h1>Ciências</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-              </div>
-            </div>
-          <div id="ingles" class="tab-content hidden">
-            <div class="square">
-                <h1>Inglês</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-         
-          <div id="geografia" class="tab-content hidden">
-            <div class="square"> 
-              <h1> Geografia</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-          <div id="historia" class="tab-content hidden">
-            <div class="square">
-                <h1>História 07/02/2025</h1>
-              <h2> Período colonial (1500-1530)</h2>
-            <p>⮕  Portugal não gera fichação e nem   habitação  do  seu povo em terras brasileiras.</p>
-            <p>⮕ nos primeiros tempos Veloso passa as terras eram consideradas como de um (paraíso), justifique assim, não houve escravização indígena.</p>
-            <p>⮕ publicamente, a comunicação com o os índios foi aprimorando-se, e os portugueses cristãos catequizando e convencia os indígenas pela beleza terrestre, de como toda testa era obra de Deus </p>
-            </div>
-            </div>
-          <div id="artes" class="tab-content hidden">
-            <div class="square">
-                <h1>Artes</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-    
-            </div>
-            </div>
-                      <div id="Filosofia" class="tab-content hidden">
-            <div class="square">
-                <h1>Filosofia</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-    
-            </div>
-            </div>
-                        <div id="biologia" class="tab-content hidden">
-              <div class="square">
-                <h1>Biologia</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-            <div id="Fisica" class="tab-content hidden">
-                
-              <div class="square">
-                <h1>Física 07/02/2025</h1>
-                <h2> Continuação da aula passada</h2>
-                <h3>9) 15KM = 15.000M</h3>
-                <h3> 10) 2,5h = <u>8000</u>s</h3>
-                <h3> 11) 108KM/h = <u> 30</u>m/s</h3>
-                <h3> 12) 1.200g = <u>12</u>Kg</h3>
-                <h3>13) 4.000M = <u>4</u>KM</h3>
-                <h3> 14) 7.200s = <u>2</u>h</h3>
-                <h3> 15) 10m/s = <u>3.6</u>KM/h</h3>
-                <h3> 16) 3kg = <u>3.000</u>g</h3>
-                <h3></h3>
-              </div>
-            </div>
-            <div id="educacaofinanceira" class="tab-content hidden">
-              <div class="square">
-                <h1>Educação Financeira</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-              </div>
-            </div>
-          <div id="redacao" class="tab-content hidden">
-            <div class="square">
-                <h1>Redação</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-         
-          <div id="quimica" class="tab-content hidden">
-            <div class="square"> 
-              <h1>Química</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-          <div id="sociologia" class="tab-content hidden">
-            <div class="square">
-                <h1>Sociologia</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-            </div>
-            </div>
-          <div id="projetoindustrial" class="tab-content hidden">
-            <div class="square">
-                <h1>Projeto Industrial</h1>
-                <h2>No momento essa página não possuí conteúdos ou foram
-                removidos.</h2>
-    
-            </div>
-            </div>
-          <div id="erro" class="tab-content hidden">
-          <h1> Erro!</h1>
-          <h2> parece que essa página está em manutenção e em breve pode voltar.</h2>
-            </div>
-                      <div id="lembretes" class="tab-content hidden">
-                  <div id="protecao">
-        <div class="senha-box">
-            <h2>Digite a Senha</h2>
-            <input type="password" id="senhaInput" placeholder="Digite sua senha">
-            <button onclick="verificarSenha()">Entrar</button>
-                  <button class="options-btn" onclick="removerSenha()">Remover
-                  Senha</button>
-
-        </div>
-    </div>
-         <div class="temp-div" id="tempDiv">
-           <h2>Novidade</h2>
-            <p>Agora você pode adicionar uma senha se quiser manter suas informações
-            em segurança nas <a href="#configuracoes" class="tab-link">
-            Configurações</a>.</p>
-            <p> ⚠️ Talvez você possa encontrar alguns bugs ou erros, mas logo
-            serão resolvidos.</p>
-            <button class="confirm-btn" onclick="confirmar()">Fechar</button>
-        </div>
-    <div class="anotacoes">
-      
-        <h1>Campo de Anotações</h1>
-        <div class="top-bar">
-             <div id="current-date"></div>
-            <div class="char-count" id="char-count">Caracteres: 0</div>
-        </div>
-        <div class="message" id="message">Conteúdo Salvo.</div>
-        <textarea class="editor" id="editor" placeholder="Comece a escrever..." oninput="updateCharCount()"></textarea>
-        <div id="links-section"> <!-- Seção de links detectados -->
-            <h3>Links foram detectados:</h3>
-            <ul id="links-list"></ul>
-        </div>
-        <div class="controls">
-            <button onclick="clearContent()">
-                <i class="fas fa-eraser"></i> Apagar Tudo
-            </button>
-            <button onclick="saveContent()">
-                <i class="fas fa-save"></i> Salvar
-            </button>
-
-        </div>
-        <div class="last-modification" id="last-modification">Última modificação foi feita em: N/A</div>
-    </div>
-    
-            </div>
-                                  <div id="configuracoes" class="tab-content hidden">
-            <div class="square">
-                <h1>Configurações</h1>
-                <h3> Gerencie suas configurações e faça sua personalização que preferir.</h3>
-                <br>
-                <br>
-                <h4>Status e Informações </h4>
-                 <p id="stats">Carregando...</p>
-          <br>
-          <br>
-          <h4> Configurações de Interface</h4>
-        <label for="fontSizeSelect">Tamanho do conteúdo:</label>
-        <select id="fontSizeSelect">
-            <option value="small">Pequena</option>
-            <option value="medium" selected>Padrão</option>
-            <option value="large">Grande</option>
-            <option value="xlarge">Extra Grande</option>
-        </select>
-        <br>
-        <br>
-        <h4> Preferências e Privacidade</h4>
-        <li id="toggleAnimations">Desativar Animações</li>
-       <li onclick="gerenciarSenha()">Gerenciar senha das anotações</li>
-
-            </div>
-            </div>
-
+    <header>
+        <nav>
+            <div class="logo">Revisão</div>
             
-            
-            
-          <div class="footer">
-        <a href="#inicio" class="tab-link" title="Início">
-            <i class="fas fa-home"></i>
-            inicio
-        </a>
-        <a href="#lembretes" class="tab-link" title="Matérias">
-            <i class="fa-solid fa-pen-to-square"></i>
-          Anotações
-        </a>
-        <a href="#configuracoes" class="tab-link" title=" Configurações">
-            <i class="fa-solid fa-gear"></i>
-            Configurações
-        </a>
+            <div class="nav-menu">
+<a href="index.html"><font color="blue">Início</font></a>
+                <a href="#">Reviews</a>
+                <a href="#">Tech</a>
+                <a href="#">Contato</a>
+            </div>
 
-    </div>
+            <div class="controls">
+                <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+                <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+            </div>
+        </nav>
+    </header>
 
-  
-      <div class="like-button" id="likeButton">
+    <section class="hero">
+        <h1>Seja bem vindo!</h1>
+        <p>Se aprofende nas suas matérias com o <b> Revisão</b> agora é possível ver seus conteúdos cada vez mais fácil.</p>
+    </section>
 
-  </div>
-    
-  
+    <main class="feed-container">
+          <article class="post-card" data-offset="1"> 
+            <div class="post-meta">
+          <span class="badge em-alta">Destaque</span>
+<span class="time-ago" data-time="2026-01-01T15:47:00">
+  <i class="ph ph-clock"></i>
+  <span class="time-text">Calculando...</span>
+</span>
+            </div>
+            <h2>Nova interface visual</h2>
+            <p class="post-excerpt">Uma interface mais moderna, com icones e uma identidade visual melhor. Agora você terá mais qualidade nos seus conteúdos.</p>
 
-  
-
-          
-                      
-                      <!-- fim da div <!---> 
-
+        </article>
         
-    
-    
-     <script src="scripts.js"></script>
+        
+        
+        
+        <article class="post-card" data-offset="1"> 
+            <div class="post-meta">
+                <span class="badge novo">Novo</span>
+<span class="time-ago" data-time="2026-01-01T14:31:00">
+  <i class="ph ph-clock"></i>
+  <span class="time-text">Calculando...</span>
+</span>
+            </div>
+            <h2>Feliz ano novo a todos!</h2>
+            <p class="post-excerpt">Que esse ano de <b> 2026</b> seja repleto de felicidades a todos e muita paz!</p>
 
+        </article>
+
+        <article class="post-card" data-offset="120">
+            <div class="post-meta">
+                <span class="badge destaque">Destaque</span>
+                <span class="time-ago"><i class="ph ph-clock"></i> <span class="time-text">Calculando...</span></span>
+            </div>
+            <h2>Minimalismo Digital: Menos é Mais</h2>
+            <p class="post-excerpt">Limpando sua vida digital para focar no que realmente importa em um mundo hiperconectado.</p>
+         <button class="read-btn" onclick="window.location.href='materias.html'">
+  Ler artigo completo
+</button>
+        </article>
+
+        <article class="post-card" data-offset="1440">
+            <div class="post-meta">
+                <span class="badge novo">Review</span>
+                <span class="time-ago"><i class="ph ph-clock"></i> <span class="time-text">Calculando...</span></span>
+            </div>
+            <h2>Sony WH-1000XM5: Ainda vale a pena?</h2>
+            <p class="post-excerpt">Após 6 meses de uso intenso, revisistamos o fone de ouvido mais popular do mercado.</p>
+            <button class="read-btn" onclick="openModal('Sony WH-1000XM5', 'A qualidade de cancelamento de ruído continua imbatível, mas o design gerou controvérsias.')">Ler artigo completo</button>
+        </article>
+
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="ph ph-x"></i></button>
+            <h2 id="modal-title" style="font-size: 2rem; margin-bottom: 1rem;">Título</h2>
+            <p id="modal-body" style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8;">Conteúdo...</p>
+            <br>
+            <a href="index.html">
+    <button class="read-btn">Ver completo</button>
+</a>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
 </body>
 </html>
