@@ -1,354 +1,359 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Analytics - Business Intelligence</title>
+  <meta name="theme-color" content="#1c1c1c">
+    <title>Revisão - Pagina principal </title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <meta name="version" content="3.4.0">
+  <meta name="description" content="Plataforma principal de matérias, aqui você
+  tem acesso a os melhores conteúdos com qualidade."> <!-- Descrição do site -->
+<meta name="keywords" content="materias, Rio Grande RS"> <!-- Palavras-chave -->
+<meta name="author" content=" Equipe
+Revisão"> <!-- Autor do site -->
+<meta name="robots" content="index, follow"> <!-- Diretrizes para motores de busca -->
+  <link rel="icon" href="favicon.ico.png" type="image/x-icon"> <!-- Favicon padrão -->
+<link rel="apple-touch-icon" href="favicon.ico.png"> <!-- Ícone para dispositivos Apple -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+    <link rel="stylesheet" href="style.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        /* [ESTILIZAÇÃO ORIGINAL PRESERVADA] */
-        .list, .right, .popup-box { scrollbar-width: thin; scrollbar-color: var(--border) transparent; overflow-y: auto !important; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        :root {
-            --bg: #080a0c; --panel: #111418; --panel-2: #1c2128; --txt: #f0f3f5;
-            --sub: #94a3b8; --green: #10b981; --green-glow: rgba(16, 185, 129, 0.2);
-            --border: #2d333b; --hover: #21262d; --accent: #3b82f6; --pix: #2dd4bf;
-            --card: #f43f5e; --error: #ef4444;
-        }
-        * { box-sizing: border-box; font-family: "Plus Jakarta Sans", sans-serif; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { margin: 0; background: var(--bg); color: var(--txt); overflow-x: hidden; }
-
-        /* HEADER E AUTH */
-        .top-bar {
-            width: 100%; background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(12px);
-            padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
-        }
-        .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, var(--sub)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .auth-section { display: flex; align-items: center; gap: 12px; }
-        .user-pill { 
-            display: none; align-items: center; gap: 10px; background: var(--panel-2); 
-            padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border); cursor: pointer;
-        }
-        .user-pill img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--green); }
-        .btn-google { 
-            background: #fff; color: #000; border: none; padding: 8px 16px; 
-            border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
-        }
-
-        /* LAYOUT */
-        .app { display: flex; width: 100%; min-height: calc(100vh - 80px); }
-        .left { flex: 1; padding: 40px; }
-        .right { width: 380px; padding: 40px 24px; background: linear-gradient(180deg, var(--panel) 0%, #0d1117 100%); border-left: 1px solid var(--border); height: calc(100vh - 77px); position: sticky; top: 77px; overflow-y: auto; }
-        .vendas-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 15px; }
-        .vh-total { font-size: clamp(32px, 5vw, 42px); font-weight: 800; color: var(--green); letter-spacing: -1px; text-shadow: 0 0 30px var(--green-glow); }
-        .card-main { background: var(--panel); border-radius: 24px; padding: 24px; border: 1px solid var(--border); margin-bottom: 32px; }
-        .list { display: flex; flex-direction: column; gap: 12px; max-height: 480px; overflow-y: auto; }
-        .item { background: var(--panel-2); border-radius: 16px; padding: 16px; display: flex; align-items: center; opacity: 0; transform: translateY(10px); }
-        .item.show { opacity: 1; transform: translateY(0); }
-        .item-icon { width: 44px; height: 44px; background: var(--bg); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: var(--green); }
-        .item-info { flex: 1; }
-        .item-info span { display: block; font-weight: 600; color: #fff; }
-        .item-value { font-weight: 700; margin-right: 15px; }
-        .delete-btn { background: transparent; color: var(--sub); border: none; cursor: pointer; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .chart-box { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; padding: 24px; }
-        .chart-title { font-size: 12px; text-transform: uppercase; color: var(--sub); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .day { background: var(--panel-2); padding: 18px; border-radius: 18px; cursor: pointer; display: flex; justify-content: space-between; border: 1px solid var(--border); margin-bottom: 14px; }
-        .day.active { border-color: var(--green); background: var(--green-glow); }
-        .add-btn { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; border-radius: 20px; background: var(--green); border: none; font-size: 24px; cursor: pointer; z-index: 100; box-shadow: 0 10px 25px var(--green-glow); }
-        .modal, .popup { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 2000; }
-        .modal.show, .popup.show { display: flex; }
-        .modal-box, .popup-box { background: var(--panel); width: 100%; max-width: 450px; border-radius: 30px; padding: 32px; border: 1px solid var(--border); }
-        input { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 16px; border-radius: 14px; color: #fff; margin-bottom: 15px; outline: none; }
-        .btn-confirm { background: var(--green); color: #000; font-weight: 800; padding: 18px; border-radius: 16px; border: none; cursor: pointer; width: 100%; }
-        .pg { display: flex; gap: 10px; margin-bottom: 20px; }
-        .pg button { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--sub); cursor: pointer; font-size: 11px; font-weight: 700; }
-        .pg button.active { background: var(--green-glow); color: var(--green); border-color: var(--green); }
-        .toast { position: fixed; bottom: 30px; left: 30px; background: #fff; color: #000; padding: 16px 24px; border-radius: 16px; font-weight: 700; transform: translateY(200px); z-index: 3000; }
-        .toast.show { transform: translateY(0); }
-    </style>
 </head>
 <body>
-
-<div class="top-bar">
-    <div class="logo"><i class="fa-solid fa-chart-line"></i> PRO ANALYTICS</div>
-    <div class="auth-section">
-        <div id="userPill" class="user-pill" onclick="handleLogout()">
-            <img id="userImg" src="" alt="">
-            <span id="userName" style="font-size: 13px; font-weight: 600;"></span>
-        </div>
-        <button id="btnLogin" class="btn-google" onclick="handleLogin()">
-            <i class="fa-brands fa-google"></i> Entrar com Google
-        </button>
-        <button onclick="window.openPopup()" style="background:var(--panel-2); border:1px solid var(--border); color:#fff; width:44px; height:44px; border-radius:12px; cursor:pointer;"><i class="fa-solid fa-layer-group"></i></button>
-    </div>
+  
+<div id="overlay" class="overlay"></div>
+<div id="popup1" class="popup">
+  <button class="close-btn" onclick="closePopup('popup1')">X</button>
+  <h1>Sobre</h1>
+  <p> Aplicativo criado no final de maio de 2024 com o simples objetivo de ser
+  uma plataforma apropriada para matérias e conteúdos.</p>
 </div>
 
-<div class="app">
-    <div class="left">
-        <div class="vendas-header">
-            <div>
-                <small style="color:var(--sub); font-weight: 700; text-transform: uppercase;">Desempenho Diário</small>
-                <div id="displayDate" style="font-size: 16px; color: #fff; margin-top: 4px; font-weight: 700;">-- de --</div>
+    <div class="splash-screen">
+    </div>
+ 
+ 
+        <div class="navbar">
+
+            <div class="hamburger-menu" id="hamburgerMenu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
             </div>
-            <div id="totalDay" class="vh-total">R$ 0,00</div>
-        </div>
+          
+            <div class="navbar-title">Revisão</div>  
+<div class="search-container">
 
-        <div class="card-main">
-            <h4 style="margin: 0 0 24px 0; font-size: 14px; color: var(--sub); display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-receipt" style="color:var(--green)"></i> Fluxo de Caixa
-            </h4>
-            <div class="list" id="list"></div>
-        </div>
+        <div id="search-popup" class="search-popup">
+            <div class="suggestions-wrapper" id="initial-suggestions">
 
-        <div class="stats-grid">
-            <div class="chart-box"><div class="chart-title">Vendas por Hora</div><div style="height: 200px;"><canvas id="chart"></canvas></div></div>
-            <div class="chart-box"><div class="chart-title">Meios de Pagamento</div><div style="height: 200px;"><canvas id="payChart"></canvas></div></div>
+
+                <!-- Adicione mais sugestões aqui -->
+            </div>
+            <ul id="suggestions-list">
+
+                         <a href="#inicio" class="tab-link ">Anotações</a>
+              <a href="#videos9B" class="tab-link ">Videos</a>
+            </ul>
         </div>
     </div>
-    <div class="right">
-        <h4 class="chart-title"><i class="fa-solid fa-history"></i> Linha do Tempo</h4>
-        <div id="days"></div>
-    </div>
+          
+
+          
+        </div>
+        <div class="tabs-container" id="tabsContainer">
+            <div class="tabs" id="tabs">
+             
+                <a href="#inicio" class="tab-link">Inicio</a>
+                    <a href="#materias" class="tab-link">Matérias</a>
+       
+              
+                <!-- Adicione mais abas conforme necessário -->
+            </div>
+        </div>
+
+        <div class="content" id="content">
+            <div id="inicio" class="tab-content hidden">
+              
+              <div id="welcome-div" class="welcome-container">
+                
+    <h2>Olá!</h2>
+    <p>É bom ter você aqui! <br> Aqui você vê tudo que precisa, Confira abaixo.</p>
+    <button id="close-button">Ok</button>
+  </div>
+
+      
+  
+<div class="contener-main">
+  <h5 data-title="Bem vindo" 
+      data-text="Seja bem vindo!" 
+      data-icon="question">Bem vindo</h5>
+  <h2>Novidades</h2>
+  <p>Estamos de volta com novos conteúdos, fique ligado!</p>
+
+
+</div>
+<div class="contener-main">
+  <h5 data-title="Calendário dos conteúdos" 
+      data-text="Se mantenha em dia com as datas dos principais novos conteúdos
+      atualizados." 
+      data-icon="question">Destaques do momento</h5>
+      
+  <h2>Matérias</h2>
+  <p>Agora essa parte mudou. <br> É possível acessar as matérias clicando abaixo.</p>
+<a href="#materias" class="tab-link"> Matérias </a>
 </div>
 
-<button class="add-btn" onclick="window.openModal()"><i class="fa-solid fa-plus"></i></button>
 
-<div class="modal" id="modal">
-    <div class="modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-            <h2 style="margin:0; font-size:20px;">Nova Entrada</h2>
-            <div onclick="window.closeModal()" style="cursor:pointer; color:var(--sub); font-size:24px;">&times;</div>
-        </div>
-        <input id="desc" placeholder="O que foi vendido?">
-        <input id="value" type="tel" placeholder="R$ 0,00" oninput="window.maskMoney(this)" style="font-size:28px; font-weight:800; color:var(--green); text-align: center;">
-        <div class="pg">
-            <button id="pg-dinheiro" class="active" onclick="window.setPg('dinheiro')">Dinheiro</button>
-            <button id="pg-pix" onclick="window.setPg('pix')">Pix</button>
-            <button id="pg-cartao" onclick="window.setPg('cartao')">Cartão</button>
-        </div>
-        <button class="btn-confirm" onclick="window.saveTransaction()">Salvar Transação</button>
-    </div>
-</div>
 
-<div class="popup" id="deleteConfirmModal">
-    <div class="popup-box" style="text-align: center;">
-        <h2 style="margin:0 0 10px 0; font-size:20px;">Excluir Transação?</h2>
-        <button class="btn-confirm" style="background: var(--card); color: #fff;" id="confirmDeleteBtn">Sim, Excluir</button>
-        <button class="btn-confirm" style="background: transparent; color: var(--sub); margin-top:10px;" onclick="window.closeDeleteModal()">Cancelar</button>
-    </div>
-</div>
 
-<div class="toast" id="toast"></div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDnJTaRsHHgRUrAZ-ChXClQ417timG2oyQ",
-        authDomain: "analises-pro-a71a7.firebaseapp.com",
-        projectId: "analises-pro-a71a7",
-        storageBucket: "analises-pro-a71a7.firebasestorage.app",
-        messagingSenderId: "74886347610",
-        appId: "1:74886347610:web:6d334865a12f2897f39163",
-        measurementId: "G-JPZHMVKHWX"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-
-    let currentUser = null;
-    let dados = {};
-    let diaAtual = getDataLocal();
-    let pg = "dinheiro";
-    let chart, payChart, saleToDelete = null;
-
-    // --- FUNÇÕES GLOBAIS (window.x para funcionar no HTML) ---
-    window.handleLogin = () => signInWithPopup(auth, provider);
-    window.handleLogout = () => confirm("Sair da conta?") && signOut(auth);
-    window.openModal = () => { document.getElementById("modal").classList.add("show"); document.getElementById("desc").focus(); };
-    window.closeModal = () => document.getElementById("modal").classList.remove("show");
-    window.setPg = (p) => { 
-        pg = p; 
-        document.querySelectorAll(".pg button").forEach(b => b.classList.remove("active"));
-        document.getElementById("pg-"+p).classList.add("active");
-    };
-    window.closeDeleteModal = () => document.getElementById("deleteConfirmModal").classList.remove("show");
-
-    // --- MONITOR DE LOGIN ---
-    onAuthStateChanged(auth, (user) => {
-        const pill = document.getElementById("userPill");
-        const btn = document.getElementById("btnLogin");
-        if (user) {
-            currentUser = user;
-            pill.style.display = "flex";
-            btn.style.display = "none";
-            document.getElementById("userName").innerText = user.displayName.split(' ')[0];
-            document.getElementById("userImg").src = user.photoURL;
-            syncFromCloud();
-        } else {
-            currentUser = null;
-            pill.style.display = "none";
-            btn.style.display = "flex";
-            dados = JSON.parse(localStorage.getItem("vendas-pro")) || {};
-            renderAll();
-        }
-    });
-
-    // --- SINCRONIZAÇÃO CLOUD ---
-    function syncFromCloud() {
-        if (!currentUser) return;
-        onSnapshot(doc(db, "users", currentUser.uid), (docSnap) => {
-            if (docSnap.exists()) {
-                dados = docSnap.data().vendas || {};
-                renderAll();
-            }
-        });
-    }
-
-    async function saveToCloud() {
-        if (currentUser) {
-            await setDoc(doc(db, "users", currentUser.uid), { vendas: dados }, { merge: true });
-        } else {
-            localStorage.setItem("vendas-pro", JSON.stringify(dados));
-        }
-    }
-
-    // --- LÓGICA DE NEGÓCIO ---
-    function getDataLocal(d=new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-
-    window.saveTransaction = async () => {
-        const valInput = document.getElementById("value");
-        const v = parseInt(valInput.value.replace(/\D/g,'')); 
-        if(!v) return showToast("⚠️ Digite um valor!");
-
-        const ano = diaAtual.split('-')[0];
-        if(!dados[ano]) dados[ano] = {};
-        if(!dados[ano][diaAtual]) dados[ano][diaAtual] = [];
-
-        dados[ano][diaAtual].push({
-            desc: document.getElementById("desc").value || "Venda Avulsa",
-            valor: v, pg, hora: new Date().toLocaleTimeString("pt-BR", {hour: '2-digit', minute:'2-digit'})
-        });
-
-        await saveToCloud();
-        window.closeModal();
-        document.getElementById("desc").value = "";
-        document.getElementById("value").value = "";
-        showToast("✅ Gravado na nuvem!");
-        renderAll();
-    };
-
-    window.askDelete = (idx) => {
-        saleToDelete = idx;
-        document.getElementById("deleteConfirmModal").classList.add("show");
-    };
-
-    document.getElementById("confirmDeleteBtn").onclick = async () => {
-        const ano = diaAtual.split('-')[0];
-        dados[ano][diaAtual].splice(saleToDelete, 1);
-        await saveToCloud();
-        window.closeDeleteModal();
-        renderAll();
-    };
-
-    function renderAll() {
-        const [y, m, d] = diaAtual.split('-');
-        document.getElementById("displayDate").innerText = new Date(y, m-1, d).toLocaleDateString("pt-BR", {day:'2-digit', month:'long'});
-        renderDays();
-        renderList();
-        renderCharts();
-    }
-
-    function renderDays() {
-        const div = document.getElementById("days");
-        const ano = diaAtual.split('-')[0];
-        const ordenados = Object.keys(dados[ano] || {}).sort().reverse();
-        div.innerHTML = ordenados.map(dt => {
-            const total = dados[ano][dt].reduce((s,v) => s+v.valor, 0);
-            return `<div class="day ${dt===diaAtual?'active':''}" onclick="window.setDia('${dt}')">
-                <div><b>${dt.split('-')[2]}/${dt.split('-')[1]}</b></div>
-                <span>R$ ${formatCurrency(total/100)}</span>
-            </div>`;
-        }).join('') || '<p style="text-align:center;color:var(--sub)">Vazio</p>';
-    }
-
-    window.setDia = (d) => { diaAtual = d; renderAll(); };
-
-    function renderList() {
-        const list = document.getElementById("list");
-        const ano = diaAtual.split('-')[0];
-        const vendas = dados[ano]?.[diaAtual] || [];
-        let total = 0;
-        list.innerHTML = "";
-        vendas.slice().reverse().forEach((v, i) => {
-            total += v.valor;
-            const icon = v.pg === 'dinheiro' ? 'fa-money-bill' : (v.pg === 'pix' ? 'fa-pix' : 'fa-credit-card');
-            const item = document.createElement("div");
-            item.className = "item show";
-            item.innerHTML = `
-                <div class="item-icon"><i class="fa-solid ${icon}"></i></div>
-                <div class="item-info"><span>${v.desc}</span><small>${v.hora}</small></div>
-                <div class="item-value">R$ ${formatCurrency(v.valor/100)}</div>
-                <button class="delete-btn" onclick="window.askDelete(${vendas.length-1-i})"><i class="fa-solid fa-trash"></i></button>
-            `;
-            list.appendChild(item);
-        });
-        document.getElementById("totalDay").innerText = "R$ " + formatCurrency(total/100);
-    }
-
-    function renderCharts() {
-        const ano = diaAtual.split('-')[0];
-        const vendas = dados[ano]?.[diaAtual] || [];
-        const pgData = {dinheiro: 0, pix: 0, cartao: 0};
-        const horaData = Array(24).fill(0);
-
-        vendas.forEach(v => {
-            pgData[v.pg] += v.valor/100;
-            const h = parseInt(v.hora.split(':')[0]);
-            horaData[h] += v.valor/100;
-        });
-
-        if(chart) chart.destroy();
-        chart = new Chart(document.getElementById("chart"), {
-            type: 'line',
-            data: { labels: horaData.map((_,i)=>i+'h'), datasets: [{data: horaData, borderColor:'#10b981', tension:0.4, fill:true, backgroundColor:'rgba(16,185,129,0.1)'}] },
-            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
-        });
-
-        if(payChart) payChart.destroy();
-        payChart = new Chart(document.getElementById("payChart"), {
-            type: 'doughnut',
-            data: { labels: ['Dinheiro', 'Pix', 'Cartão'], datasets: [{data: [pgData.dinheiro, pgData.pix, pgData.cartao], backgroundColor:['#10b981','#2dd4bf','#f43f5e']}] },
-            options: { responsive:true, maintainAspectRatio:false, cutout:'80%', plugins:{legend:{position:'bottom'}}}
-        });
-    }
-
-    // Auxiliares finais
-    window.maskMoney = (i) => {
-        let v = i.value.replace(/\D/g,'');
-        v = (v/100).toFixed(2).replace(".", ",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-        i.value = "R$ " + v;
-    };
-    function formatCurrency(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:2}); }
-    function showToast(m){ const t=document.getElementById("toast"); t.innerText=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),3000); }
+           </div>
+               
+          <!--Começo da div de matematica-->
+            <div id="matematica" class="tab-content hidden">
+              <div class="square">
+                <h1> Matemática</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+                        <div id="materias" class="tab-content hidden">
+              <div class="square">
+                <h1> Matemática</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+            <div id="portugues" class="tab-content hidden">
+                
+              <div class="square">
+                <h1> Português</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+              </div>
+            </div>
+            <div id="ciencias" class="tab-content hidden">
+              <div class="square">
+                <h1>Ciências</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+              </div>
+            </div>
+          <div id="ingles" class="tab-content hidden">
+            <div class="square">
+                <h1>Inglês</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+         
+          <div id="geografia" class="tab-content hidden">
+            <div class="square"> 
+              <h1> Geografia</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+          <div id="historia" class="tab-content hidden">
+            <div class="square">
+                <h1>História 07/02/2025</h1>
+              <h2> Período colonial (1500-1530)</h2>
+            <p>⮕  Portugal não gera fichação e nem   habitação  do  seu povo em terras brasileiras.</p>
+            <p>⮕ nos primeiros tempos Veloso passa as terras eram consideradas como de um (paraíso), justifique assim, não houve escravização indígena.</p>
+            <p>⮕ publicamente, a comunicação com o os índios foi aprimorando-se, e os portugueses cristãos catequizando e convencia os indígenas pela beleza terrestre, de como toda testa era obra de Deus </p>
+            </div>
+            </div>
+          <div id="artes" class="tab-content hidden">
+            <div class="square">
+                <h1>Artes</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
     
-    renderAll();
-</script>
+            </div>
+            </div>
+                      <div id="Filosofia" class="tab-content hidden">
+            <div class="square">
+                <h1>Filosofia</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+    
+            </div>
+            </div>
+                        <div id="biologia" class="tab-content hidden">
+              <div class="square">
+                <h1>Biologia</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+            <div id="Fisica" class="tab-content hidden">
+                
+              <div class="square">
+                <h1>Física 07/02/2025</h1>
+                <h2> Continuação da aula passada</h2>
+                <h3>9) 15KM = 15.000M</h3>
+                <h3> 10) 2,5h = <u>8000</u>s</h3>
+                <h3> 11) 108KM/h = <u> 30</u>m/s</h3>
+                <h3> 12) 1.200g = <u>12</u>Kg</h3>
+                <h3>13) 4.000M = <u>4</u>KM</h3>
+                <h3> 14) 7.200s = <u>2</u>h</h3>
+                <h3> 15) 10m/s = <u>3.6</u>KM/h</h3>
+                <h3> 16) 3kg = <u>3.000</u>g</h3>
+                <h3></h3>
+              </div>
+            </div>
+            <div id="educacaofinanceira" class="tab-content hidden">
+              <div class="square">
+                <h1>Educação Financeira</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+              </div>
+            </div>
+          <div id="redacao" class="tab-content hidden">
+            <div class="square">
+                <h1>Redação</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+         
+          <div id="quimica" class="tab-content hidden">
+            <div class="square"> 
+              <h1>Química</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+          <div id="sociologia" class="tab-content hidden">
+            <div class="square">
+                <h1>Sociologia</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+            </div>
+            </div>
+          <div id="projetoindustrial" class="tab-content hidden">
+            <div class="square">
+                <h1>Projeto Industrial</h1>
+                <h2>No momento essa página não possuí conteúdos ou foram
+                removidos.</h2>
+    
+            </div>
+            </div>
+          <div id="erro" class="tab-content hidden">
+          <h1> Erro!</h1>
+          <h2> parece que essa página está em manutenção e em breve pode voltar.</h2>
+            </div>
+                      <div id="lembretes" class="tab-content hidden">
+                  <div id="protecao">
+        <div class="senha-box">
+            <h2>Digite a Senha</h2>
+            <input type="password" id="senhaInput" placeholder="Digite sua senha">
+            <button onclick="verificarSenha()">Entrar</button>
+                  <button class="options-btn" onclick="removerSenha()">Remover
+                  Senha</button>
+
+        </div>
+    </div>
+         <div class="temp-div" id="tempDiv">
+           <h2>Novidade</h2>
+            <p>Agora você pode adicionar uma senha se quiser manter suas informações
+            em segurança nas <a href="#configuracoes" class="tab-link">
+            Configurações</a>.</p>
+            <p> ⚠️ Talvez você possa encontrar alguns bugs ou erros, mas logo
+            serão resolvidos.</p>
+            <button class="confirm-btn" onclick="confirmar()">Fechar</button>
+        </div>
+    <div class="anotacoes">
+      
+        <h1>Campo de Anotações</h1>
+        <div class="top-bar">
+             <div id="current-date"></div>
+            <div class="char-count" id="char-count">Caracteres: 0</div>
+        </div>
+        <div class="message" id="message">Conteúdo Salvo.</div>
+        <textarea class="editor" id="editor" placeholder="Comece a escrever..." oninput="updateCharCount()"></textarea>
+        <div id="links-section"> <!-- Seção de links detectados -->
+            <h3>Links foram detectados:</h3>
+            <ul id="links-list"></ul>
+        </div>
+        <div class="controls">
+            <button onclick="clearContent()">
+                <i class="fas fa-eraser"></i> Apagar Tudo
+            </button>
+            <button onclick="saveContent()">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+
+        </div>
+        <div class="last-modification" id="last-modification">Última modificação foi feita em: N/A</div>
+    </div>
+    
+            </div>
+                                  <div id="configuracoes" class="tab-content hidden">
+            <div class="square">
+                <h1>Configurações</h1>
+                <h3> Gerencie suas configurações e faça sua personalização que preferir.</h3>
+                <br>
+                <br>
+                <h4>Status e Informações </h4>
+                 <p id="stats">Carregando...</p>
+          <br>
+          <br>
+          <h4> Configurações de Interface</h4>
+        <label for="fontSizeSelect">Tamanho do conteúdo:</label>
+        <select id="fontSizeSelect">
+            <option value="small">Pequena</option>
+            <option value="medium" selected>Padrão</option>
+            <option value="large">Grande</option>
+            <option value="xlarge">Extra Grande</option>
+        </select>
+        <br>
+        <br>
+        <h4> Preferências e Privacidade</h4>
+        <li id="toggleAnimations">Desativar Animações</li>
+       <li onclick="gerenciarSenha()">Gerenciar senha das anotações</li>
+
+            </div>
+            </div>
+
+            
+            
+            
+          <div class="footer">
+        <a href="#inicio" class="tab-link" title="Início">
+            <i class="fas fa-home"></i>
+            inicio
+        </a>
+        <a href="#lembretes" class="tab-link" title="Matérias">
+            <i class="fa-solid fa-pen-to-square"></i>
+          Anotações
+        </a>
+        <a href="#configuracoes" class="tab-link" title=" Configurações">
+            <i class="fa-solid fa-gear"></i>
+            Configurações
+        </a>
+
+    </div>
+
+  
+      <div class="like-button" id="likeButton">
+
+  </div>
+    
+  
+
+  
+
+          
+                      
+                      <!-- fim da div <!---> 
+
+        
+    
+    
+     <script src="scripts.js"></script>
 
 </body>
 </html>
