@@ -12,26 +12,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="notificacoes.js"></script>
 </head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">Revisão</div>
-            
-            <div class="nav-menu">
-<a href="index.html"><font color="blue">Início</font></a>
-                <a href="#">Reviews</a>
-                <a href="#">Tech</a>
-                <a href="#">Contato</a>
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
+        
+        <div class="nav-menu">
+            <a href="index.html" style="color: blue;">Início</a>
+            <a href="marerias.html">Matérias</a>
+            <a href="#">Tech</a>
+            <a href="#">Contato</a>
+        </div>
+
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
             </div>
 
-            <div class="controls">
-                <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
-                <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
-            </div>
-        </nav>
-    </header>
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+        </div>
+    </nav>
+</header>
 
     <section class="hero">
         <h1>Seja bem vindo!</h1>
@@ -75,7 +89,7 @@
             </div>
             <h2>Minimalismo Digital: Menos é Mais</h2>
             <p class="post-excerpt">Limpando sua vida digital para focar no que realmente importa em um mundo hiperconectado.</p>
-         <button class="read-btn" onclick="window.location.href='materias.html'">
+         <button class="read-btn" onclick="window.location.href='Pagina.html'">
   Ler artigo completo
 </button>
         </article>

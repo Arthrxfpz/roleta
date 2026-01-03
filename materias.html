@@ -3,235 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimalismo Digital: Menos é Mais | Revisão</title>
+    <title>Revisão | Central de Conteúdo</title>
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
+  <script src="notificacoes.js"></script>
+   <style>
+/* --- VARIÁVEIS --- */
+:root {
+    --font-main: 'Plus Jakarta Sans', sans-serif;
+    
+    /* Light Mode */
+    --bg-color: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #111111;
+    --text-secondary: #666666;
+    --accent-color: #000000;
+    --border-color: #e5e7eb;
+    --btn-text: #ffffff;
+    
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --radius-lg: 24px;
+    --radius-sm: 12px;
+    --modal-bg: #ffffff;
+}
 
-    <style>
-        /* --- VARIÁVEIS (DESIGN SYSTEM) --- */
-        :root {
-            --font-main: 'Plus Jakarta Sans', sans-serif;
-            --prose-width: 750px; 
+/* Dark Mode */
+body.dark-mode {
+    --bg-color: #050505;
+    --card-bg: #111111;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --accent-color: #3b82f6;
+    --border-color: #27272a;
+    --btn-text: #ffffff;
+    --modal-bg: #111111;
+    --shadow-card: 0 0 0 1px #27272a;
+}
 
-            /* Light Mode */
-            --bg-color: #ffffff;
-            --cordabarra: rgba(255, 255, 255, 0.85);
-            --text-primary: #111111;
-            --text-secondary: #555555;
-            --accent-color: #000000;
-            --border-color: #e5e7eb;
-            --code-bg: #f3f4f6;
-            --quote-border: #000000;
-        }
+/* --- BASE --- */
+* { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; font-family: inherit; }
 
-        /* Dark Mode */
-        body.dark-mode {
-            --bg-color: #050505;
-            --cordabarra: rgba(5, 5, 5, 0.85);
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1aa;
-            --accent-color: #60a5fa;
-            --border-color: #27272a;
-            --code-bg: #18181b;
-            --quote-border: #60a5fa;
-        }
+/* OBS: O CSS do HEADER foi removido daqui conforme solicitado, 
+   pois ele será carregado do seu arquivo 'style.css'.
+*/
 
-        /* --- RESET & BASE --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; line-height: 1.6; }
-        a { text-decoration: none; color: inherit; transition: color 0.2s; }
-        a:hover { color: var(--accent-color); }
-        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
-        img { max-width: 100%; height: auto; display: block; border-radius: 16px;}
+/* --- HERO & FILTROS (MANTIDO) --- */
+.hero { margin-top: 140px; text-align: center; padding: 0 5%; margin-bottom: 40px; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 15px; line-height: 1.1; }
+.hero p { color: var(--text-secondary); max-width: 500px; margin: 0 auto; font-size: 1.1rem; }
 
-        /* --- HEADER (Ajuste para suportar a nav externa e interna) --- */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-            background: var(--cordabarra); backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border-color);
-            /* O padding é controlado pelo nav no style.css geral, mas garantimos aqui */
-        }
+.topic-nav {
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+    max-width: 850px; margin: 0 auto 50px auto; padding: 0 5%;
+}
 
-        /* --- CONTAINER PRINCIPAL DO ARTIGO --- */
-        .article-container {
-            max-width: var(--prose-width);
-            margin: 120px auto 100px;
-            padding: 0 20px;
-        }
+.topic-btn {
+    padding: 10px 24px; border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+    background: var(--card-bg); border: 1px solid var(--border-color);
+    color: var(--text-secondary); transition: all 0.2s ease;
+}
+.topic-btn:hover { border-color: var(--accent-color); color: var(--text-primary); transform: translateY(-2px); }
+.topic-btn.active {
+    background: var(--accent-color); color: var(--btn-text);
+    border-color: var(--accent-color); box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 
-        /* --- CABEÇALHO DO ARTIGO (Título, Meta) --- */
-        .article-header { text-align: center; margin-bottom: 3rem; }
+/* --- FEED GRID (MANTIDO) --- */
+.feed-container {
+    max-width: 1200px; margin: 0 auto 100px; padding: 0 5%;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
 
-        h1.article-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 1.5rem;
-        }
+/* CARD */
+.post-card {
+    background-color: var(--card-bg); border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg); padding: 2rem;
+    display: flex; flex-direction: column; gap: 1.2rem;
+    box-shadow: var(--shadow-card);
+    opacity: 1; 
+}
 
-        .article-lead {
-            font-size: 1.3rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 3rem;
-        }
+/* Classe necessária para o filtro funcionar */
+.post-card.hidden { display: none; }
 
-        .featured-image-container {
-            margin: 0 -5%; 
-            margin-bottom: 4rem;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
-            border-radius: 24px; overflow: hidden;
-        }
+.card-top { display: flex; justify-content: space-between; align-items: start; }
+.topic-tag {
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 6px 12px; border-radius: 8px;
+    background: rgba(128, 128, 128, 0.1); color: var(--text-primary);
+}
 
-        /* --- CORPO DO TEXTO --- */
-        .article-body {
-            font-size: 1.125rem;
-            line-height: 1.85;
-            color: var(--text-primary);
-        }
+.post-card h2 { font-size: 1.4rem; font-weight: 700; line-height: 1.3; margin-top: 0.5rem;}
+.post-excerpt { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem; flex-grow: 1; }
 
-        .article-body p { margin-bottom: 2rem; }
-        .article-body h2 { font-size: 2rem; font-weight: 800; margin-top: 3.5rem; margin-bottom: 1.5rem; letter-spacing: -0.5px; line-height: 1.2; }
-        .article-body h3 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+.card-action {
+    width: 100%; padding: 14px; border-radius: var(--radius-sm);
+    background: var(--text-primary); color: var(--bg-color);
+    font-weight: 600; font-size: 0.9rem;
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    transition: transform 0.2s;
+}
+.card-action:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* Citação */
-        .article-body blockquote {
-            border-left: 4px solid var(--quote-border);
-            padding-left: 1.5rem; margin: 3rem 0; font-style: italic;
-            font-size: 1.3rem; color: var(--text-primary); line-height: 1.5;
-        }
+/* --- MODAL (MANTIDO) --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+    z-index: 2000; opacity: 0; pointer-events: none;
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-content {
+    background: var(--modal-bg); width: 90%; max-width: 600px; padding: 2.5rem;
+    border-radius: var(--radius-lg); border: 1px solid var(--border-color);
+    transform: translateY(50px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+.modal-overlay.open .modal-content { transform: translateY(0); }
+.close-modal { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-secondary); background: transparent; }
 
-        /* Listas */
-        .article-body ul, .article-body ol { margin-bottom: 2rem; padding-left: 1.5rem; }
-        .article-body li { margin-bottom: 0.8rem; }
+/* --- RESPONSIVO --- */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .feed-container { grid-template-columns: 1fr; }
+    .topic-nav { overflow-x: auto; justify-content: flex-start; padding-bottom: 10px; flex-wrap: nowrap; white-space: nowrap; }
+}
 
-        /* Imagem e Legenda */
-        .article-body figure { margin: 3rem 0; }
-        .article-body figcaption { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px; }
-
-        /* Destaque Inline */
-        .highlight { background: linear-gradient(120deg, rgba(255, 230, 0, 0.434) 0%, rgba(255, 230, 0, 0) 100%); padding: 2px 5px; border-radius: 4px; }
-        body.dark-mode .highlight { background: linear-gradient(120deg, rgba(96, 165, 250, 0.3) 0%, rgba(96, 165, 250, 0) 100%); }
-
-        /* --- RODAPÉ DO ARTIGO --- */
-        .article-footer {
-            margin-top: 5rem; padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-        }
-        .tags { display: flex; gap: 10px; flex-wrap: wrap; }
-        .tag {
-            padding: 8px 16px; background: var(--code-bg); color: var(--text-secondary);
-            border-radius: 100px; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
-        }
-        .tag:hover { background: var(--border-color); color: var(--text-primary); }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .featured-image-container { margin: 0 0 3rem 0; border-radius: 16px; }
-            .article-body { font-size: 1rem; line-height: 1.75; }
-        }
-    </style>
+/* Animação do Filtro */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
 
-    <header>
-        <nav>
-            <div class="logo">Revisão</div>
-            
-            <div class="nav-menu">
-                <a href="index.html"><font color="blue">Início</font></a>
-                <a href="#">Reviews</a>
-                <a href="#">Tech</a>
-                <a href="#">Contato</a>
-            </div>
-
-            <div class="controls">
-                <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
-                <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
-            </div>
-        </nav>
-    </header>
-    
-    <main class="article-container">
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
         
-        <div class="article-header">
-            <h1 class="article-title">Minimalismo Digital: Limpando sua vida focando no essencial</h1>
-            <p class="article-lead">
-                Em um mundo hiperconectado, o verdadeiro luxo é a capacidade de se desconectar e focar no que realmente importa.
-            </p>
+        <div class="nav-menu">
+            <a href="index.html" style="color: blue;">Início</a>
+            <a href="marerias.html">Matérias</a>
+            <a href="#">Tech</a>
+            <a href="#">Contato</a>
         </div>
 
-        <div class="featured-image-container">
-            <img src="https://images.unsplash.com/photo-1494173853739-c21f58b16055?q=80&w=2070&auto=format&fit=crop" alt="Mesa de trabalho minimalista">
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
+            </div>
+
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
         </div>
+    </nav>
+</header>
 
-        <article class="article-body">
-            <p>Vivemos em uma era de ruído constante. Notificações pipocam, e-mails chegam a cada segundo e o feed das redes sociais parece infinito. O <span class="highlight">minimalismo digital</span> não é sobre jogar seu smartphone fora e viver numa caverna, mas sim sobre usar a tecnologia com <strong>intenção</strong>.</p>
+    <section class="hero">
+        <h1>Explore por suas matérias</h1>
+        <p>Selecione uma por uma categoria se preferir.</p>
+    </section>
 
-            <h2>O problema da atenção fragmentada</h2>
-            <p>Nossa atenção tornou-se a moeda mais valiosa da economia moderna. Aplicativos são desenhados por engenheiros brilhantes para sequestrar seu foco pelo maior tempo possível. O resultado? Uma sensação constante de esgotamento mental e a incapacidade de realizar trabalho profundo (Deep Work).</p>
+    <div class="topic-nav" id="topic-filters">
+        <button class="topic-btn active" data-filter="all">Todos</button>
+        <button class="topic-btn" data-filter="dev">Desenvolvimento</button>
+        <button class="topic-btn" data-filter="design">Design</button>
+        <button class="topic-btn" data-filter="produtividade">Produtividade</button>
+        <button class="topic-btn" data-filter="estudos">Estudos</button>
+    </div>
 
-            <blockquote>
-                "A tecnologia é um ótimo servo, mas um péssimo mestre."
-            </blockquote>
+    <main class="feed-container">
 
-            <p>Quando permitimos que a tecnologia dite quando e como reagimos, perdemos a autonomia sobre nosso próprio tempo. O minimalismo digital propõe retomar esse controle.</p>
-
-            <h2>Princípios para começar hoje</h2>
-            <p>Adotar essa filosofia requer mudanças práticas. Não tente mudar tudo de uma vez. Comece pequeno:</p>
-
-            <ul>
-                <li><strong>Auditoria de Apps:</strong> Olhe para a tela do seu celular. Quantos desses aplicativos você usou na última semana? Delete os que não trazem valor real.</li>
-                <li><strong>Notificações Zero:</strong> Desative todas as notificações que não sejam de humanos reais tentando falar com você (mensagens diretas e ligações). O resto pode esperar você abrir o app.</li>
-                <li><strong>Defina Zonas Livres:</strong> Estabeleça locais (como o quarto ou a mesa de jantar) ou horários onde telas são proibidas.</li>
-            </ul>
-
-            <figure>
-                 <img src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?q=80&w=2071&auto=format&fit=crop" alt="Pessoa lendo um livro sem celular por perto" style="aspect-ratio: 16/9; object-fit: cover;">
-                 <figcaption>Zonas livres de tecnologia ajudam a reconectar com o mundo analógico.</figcaption>
-            </figure>
-
-            <h3>Benefícios a longo prazo</h3>
-            <p>Ao limpar o ruído digital, você abre espaço mental. De repente, você tem tempo para ler aquele livro, focar em um projeto complexo ou simplesmente estar presente em uma conversa sem sentir o impulso de checar o bolso a cada vibração fantasma.</p>
-            
-            <p>O objetivo final é simples: fazer com que a tecnologia sirva aos seus objetivos de vida, e não o contrário.</p>
+        <article class="post-card" data-category="dev">
+            <div class="card-top">
+                <span class="topic-tag">Dev & Tech</span>
+                <i class="ph ph-code" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Estrutura de Dados</h2>
+            <p class="post-excerpt">Revisão sobre arrays, listas ligadas e árvores binárias. Conceitos fundamentais para entrevistas técnicas.</p>
+            <button class="card-action" onclick="openModal('Estrutura de Dados', 'Conteúdo detalhado sobre estruturas de dados: Arrays são rápidos para leitura, Listas Ligadas para inserção...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
         </article>
 
-        <footer class="article-footer">
-            <div class="tags">
-                <a href="#" class="tag">Tecnologia</a>
-                <a href="#" class="tag">Bem-estar</a>
-                <a href="#" class="tag">Foco</a>
+        <article class="post-card" data-category="design">
+            <div class="card-top">
+                <span class="topic-tag">Design</span>
+                <i class="ph ph-paint-brush" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
             </div>
-        </footer>
+            <h2>Psicologia das Cores</h2>
+            <p class="post-excerpt">Como utilizar cores para influenciar a decisão do usuário em interfaces digitais e branding.</p>
+            <button class="card-action" onclick="openModal('Psicologia das Cores', 'O azul transmite confiança e segurança, muito usado em bancos. O vermelho cria urgência...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="produtividade">
+            <div class="card-top">
+                <span class="topic-tag">Produtividade</span>
+                <i class="ph ph-lightning" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Método Pomodoro</h2>
+            <p class="post-excerpt">Técnica de gerenciamento de tempo que utiliza um cronômetro para dividir o trabalho em intervalos.</p>
+            <button class="card-action" onclick="openModal('Método Pomodoro', 'A técnica consiste em usar um cronômetro para dividir o trabalho em períodos de 25 minutos...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+         <article class="post-card" data-category="estudos">
+            <div class="card-top">
+                <span class="topic-tag">Estudos</span>
+                <i class="ph ph-book-open" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Técnica Feynman</h2>
+            <p class="post-excerpt">O melhor método para aprender qualquer coisa: explique o conceito como se estivesse ensinando uma criança.</p>
+            <button class="card-action" onclick="openModal('Técnica Feynman', 'Passo 1: Escolha um conceito. Passo 2: Explique-o de forma simples. Passo 3: Identifique as falhas...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="dev">
+            <div class="card-top">
+                <span class="topic-tag">Dev & Tech</span>
+                <i class="ph ph-terminal" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>CSS Grid vs Flexbox</h2>
+            <p class="post-excerpt">Quando usar um ou outro? Um guia prático para layout responsivo moderno na web.</p>
+            <button class="card-action" onclick="openModal('Grid vs Flexbox', 'Flexbox é unidimensional (linha OU coluna). Grid é bidimensional (linha E coluna). Use Flex para componentes...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
 
     </main>
-          <script src="scripts.js"></script>
-    <script>
 
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="ph ph-x"></i></button>
+            <h2 id="modal-title" style="margin-bottom: 1rem;">Título</h2>
+            <p id="modal-body" style="color: var(--text-secondary);">Conteúdo...</p>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. LÓGICA DE FILTRAGEM ---
+        const filterBtns = document.querySelectorAll('.topic-btn');
+        const cards = document.querySelectorAll('.post-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                cards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+
+                    if (filterValue === 'all' || filterValue === cardCategory) {
+                        card.classList.remove('hidden');
+                        // Reinicia animação
+                        card.style.animation = 'none';
+                        card.offsetHeight; 
+                        card.style.animation = 'fadeIn 0.5s ease forwards';
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // --- 2. DARK MODE ---
         const themeBtn = document.getElementById('theme-toggle');
-        const themeIcon = themeBtn.querySelector('i');
+        const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
 
         function setDarkMode(isDark) {
             if (isDark) {
                 document.body.classList.add('dark-mode');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
+                if(themeIcon) themeIcon.classList.replace('ph-moon', 'ph-sun');
                 localStorage.setItem('theme', 'dark');
             } else {
                 document.body.classList.remove('dark-mode');
-                themeIcon.classList.replace('ph-sun', 'ph-moon');
+                if(themeIcon) themeIcon.classList.replace('ph-sun', 'ph-moon');
                 localStorage.setItem('theme', 'light');
             }
         }
-        // Verifica preferência salva
-        if (localStorage.getItem('theme') === 'dark') {
-            setDarkMode(true);
+
+        if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                setDarkMode(!document.body.classList.contains('dark-mode'));
+            });
         }
-        // Alterna ao clicar
-        themeBtn.addEventListener('click', () => {
-            setDarkMode(!document.body.classList.contains('dark-mode'));
+
+        // --- 3. MENU MOBILE ---
+        const hamburgerBtn = document.getElementById('hamburger');
+        const navMenu = document.querySelector('.nav-menu'); // Seleciona pela classe
+
+        if (hamburgerBtn && navMenu) {
+            hamburgerBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const icon = hamburgerBtn.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.replace('ph-list', 'ph-x');
+                } else {
+                    icon.classList.replace('ph-x', 'ph-list');
+                }
+            });
+        }
+
+        // --- 4. MODAL ---
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+
+        function openModal(title, body) {
+            modalTitle.innerText = title;
+            modalBody.innerText = body;
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        if(modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
+                closeModal();
+            }
         });
     </script>
-
 </body>
 </html>

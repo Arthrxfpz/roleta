@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Notificações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --danger: #ef4444;
+            --text: #334155;
+            --bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 20px; /* Alinhado ao topo/esquerda */
+            background-color: #f1f5f9;
+        }
+
+        .notification-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Botão do Ícone */
+        .btn-notif {
+            background: var(--bg);
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .btn-notif:hover {
+            background: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        .btn-notif i {
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        /* Contador Dinâmico */
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid white;
+        }
+
+        /* Pop-up */
+        .dropdown {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 300px;
+            background: var(--bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 99;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dropdown.active {
+            display: block;
+        }
+
+        .header {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .item {
+            padding: 12px 15px;
+            display: flex;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text);
+            border-bottom: 1px solid #f8fafc;
+            transition: 0.2s;
+        }
+
+        .item:last-child { border: none; }
+
+        .item:hover {
+            background: #f8fafc;
+        }
+
+        .item i {
+            color: var(--primary);
+            margin-top: 3px;
+        }
+
+        .item-text b { display: block; font-size: 13px; }
+        .item-text small { color: #94a3b8; font-size: 11px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="notification-wrapper">
+        <button class="btn-notif" id="notifBtn">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge" id="counter">0</span>
+        </button>
+
+        <div class="dropdown" id="notifDropdown">
+            <div class="header">Notificações</div>
+            <div class="list" id="notifList">
+                
+                <a href="#" class="item">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <div class="item-text">
+                        <b>Novo seguidor</b>
+                        <small>Há 2 minutos</small>
+                    </div>
+                </a>
+
+                <a href="#" class="item">
+                    <i class="fa-solid fa-message"></i>
+                    <div class="item-text">
+                        <b>Nova mensagem de Bia</b>
+                        <small>Há 15 minutos</small>
+                    </div>
+                </a>
+
+                <a href="#" class="item">
+                    <i class="fa-solid fa-bolt"></i>
+                    <div class="item-text">
+                        <b>Seu plano expira em 2 dias</b>
+                        <small>Há 1 hora</small>
+                    </div>
+                </a>
+                <a href="#" class="item">
+                    <i class="fa-solid fa-bolt"></i>
+                    <div class="item-text">
+                        <b>Seu plano expira em 2 dias</b>
+                        <small>Há 1 hora</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('notifBtn');
+        const dropdown = document.getElementById('notifDropdown');
+        const list = document.getElementById('notifList');
+        const counter = document.getElementById('counter');
+
+        // Função para atualizar o contador automaticamente
+        function updateCounter() {
+            const total = list.querySelectorAll('.item').length;
+            counter.innerText = total;
+            
+            // Esconde o contador se não houver notificações
+            counter.style.display = total > 0 ? 'flex' : 'none';
+        }
+
+        // Abrir/Fechar
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+        };
+
+        // Fechar ao clicar fora
+        window.onclick = () => dropdown.classList.remove('active');
+
+        // Atualiza assim que a página carrega
+        updateCounter();
+    </script>
+</body>
+</html>

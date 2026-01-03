@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalismo Digital: Menos é Mais | Revisão</title>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+      <script src="notificacoes.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- VARIÁVEIS (DESIGN SYSTEM) --- */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --prose-width: 750px; 
+
+            /* Light Mode */
+            --bg-color: #ffffff;
+            --cordabarra: rgba(255, 255, 255, 0.85);
+            --text-primary: #111111;
+            --text-secondary: #555555;
+            --accent-color: #000000;
+            --border-color: #e5e7eb;
+            --code-bg: #f3f4f6;
+            --quote-border: #000000;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #050505;
+            --cordabarra: rgba(5, 5, 5, 0.85);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent-color: #60a5fa;
+            --border-color: #27272a;
+            --code-bg: #18181b;
+            --quote-border: #60a5fa;
+        }
+
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: color 0.2s; }
+        a:hover { color: var(--accent-color); }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+        img { max-width: 100%; height: auto; display: block; border-radius: 16px;}
+
+        /* --- HEADER (Ajuste para suportar a nav externa e interna) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+            background: var(--cordabarra); backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-color);
+            /* O padding é controlado pelo nav no style.css geral, mas garantimos aqui */
+        }
+
+        /* --- CONTAINER PRINCIPAL DO ARTIGO --- */
+        .article-container {
+            max-width: var(--prose-width);
+            margin: 120px auto 100px;
+            padding: 0 20px;
+        }
+
+        /* --- CABEÇALHO DO ARTIGO (Título, Meta) --- */
+        .article-header { text-align: center; margin-bottom: 3rem; }
+
+        h1.article-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 1.5rem;
+        }
+
+        .article-lead {
+            font-size: 1.3rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 3rem;
+        }
+
+        .featured-image-container {
+            margin: 0 -5%; 
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            border-radius: 24px; overflow: hidden;
+        }
+
+        /* --- CORPO DO TEXTO --- */
+        .article-body {
+            font-size: 1.125rem;
+            line-height: 1.85;
+            color: var(--text-primary);
+        }
+
+        .article-body p { margin-bottom: 2rem; }
+        .article-body h2 { font-size: 2rem; font-weight: 800; margin-top: 3.5rem; margin-bottom: 1.5rem; letter-spacing: -0.5px; line-height: 1.2; }
+        .article-body h3 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+
+        /* Citação */
+        .article-body blockquote {
+            border-left: 4px solid var(--quote-border);
+            padding-left: 1.5rem; margin: 3rem 0; font-style: italic;
+            font-size: 1.3rem; color: var(--text-primary); line-height: 1.5;
+        }
+
+        /* Listas */
+        .article-body ul, .article-body ol { margin-bottom: 2rem; padding-left: 1.5rem; }
+        .article-body li { margin-bottom: 0.8rem; }
+
+        /* Imagem e Legenda */
+        .article-body figure { margin: 3rem 0; }
+        .article-body figcaption { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px; }
+
+        /* Destaque Inline */
+        .highlight { background: linear-gradient(120deg, rgba(255, 230, 0, 0.434) 0%, rgba(255, 230, 0, 0) 100%); padding: 2px 5px; border-radius: 4px; }
+        body.dark-mode .highlight { background: linear-gradient(120deg, rgba(96, 165, 250, 0.3) 0%, rgba(96, 165, 250, 0) 100%); }
+
+        /* --- RODAPÉ DO ARTIGO --- */
+        .article-footer {
+            margin-top: 5rem; padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tag {
+            padding: 8px 16px; background: var(--code-bg); color: var(--text-secondary);
+            border-radius: 100px; font-size: 0.85rem; font-weight: 600; transition: all 0.2s;
+        }
+        .tag:hover { background: var(--border-color); color: var(--text-primary); }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .featured-image-container { margin: 0 0 3rem 0; border-radius: 16px; }
+            .article-body { font-size: 1rem; line-height: 1.75; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
+        
+        <div class="nav-menu">
+            <a href="index.html" style="color: blue;">Início</a>
+            <a href="marerias.html">Matérias</a>
+            <a href="#">Tech</a>
+            <a href="#">Contato</a>
+        </div>
+
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
+            </div>
+
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+        </div>
+    </nav>
+</header>
+
+    <main class="article-container">
+        
+        <div class="article-header">
+            <h1 class="article-title">Minimalismo Digital: Limpando sua vida focando no essencial</h1>
+            <p class="article-lead">
+                Em um mundo hiperconectado, o verdadeiro luxo é a capacidade de se desconectar e focar no que realmente importa.
+            </p>
+        </div>
+
+        <div class="featured-image-container">
+            <img src="https://images.unsplash.com/photo-1494173853739-c21f58b16055?q=80&w=2070&auto=format&fit=crop" alt="Mesa de trabalho minimalista">
+        </div>
+
+        <article class="article-body">
+            <p>Vivemos em uma era de ruído constante. Notificações pipocam, e-mails chegam a cada segundo e o feed das redes sociais parece infinito. O <span class="highlight">minimalismo digital</span> não é sobre jogar seu smartphone fora e viver numa caverna, mas sim sobre usar a tecnologia com <strong>intenção</strong>.</p>
+
+            <h2>O problema da atenção fragmentada</h2>
+            <p>Nossa atenção tornou-se a moeda mais valiosa da economia moderna. Aplicativos são desenhados por engenheiros brilhantes para sequestrar seu foco pelo maior tempo possível. O resultado? Uma sensação constante de esgotamento mental e a incapacidade de realizar trabalho profundo (Deep Work).</p>
+
+            <blockquote>
+                "A tecnologia é um ótimo servo, mas um péssimo mestre."
+            </blockquote>
+
+            <p>Quando permitimos que a tecnologia dite quando e como reagimos, perdemos a autonomia sobre nosso próprio tempo. O minimalismo digital propõe retomar esse controle.</p>
+
+            <h2>Princípios para começar hoje</h2>
+            <p>Adotar essa filosofia requer mudanças práticas. Não tente mudar tudo de uma vez. Comece pequeno:</p>
+
+            <ul>
+                <li><strong>Auditoria de Apps:</strong> Olhe para a tela do seu celular. Quantos desses aplicativos você usou na última semana? Delete os que não trazem valor real.</li>
+                <li><strong>Notificações Zero:</strong> Desative todas as notificações que não sejam de humanos reais tentando falar com você (mensagens diretas e ligações). O resto pode esperar você abrir o app.</li>
+                <li><strong>Defina Zonas Livres:</strong> Estabeleça locais (como o quarto ou a mesa de jantar) ou horários onde telas são proibidas.</li>
+            </ul>
+
+            <figure>
+                 <img src="https://images.unsplash.com/photo-1512314889357-e157c22f938d?q=80&w=2071&auto=format&fit=crop" alt="Pessoa lendo um livro sem celular por perto" style="aspect-ratio: 16/9; object-fit: cover;">
+                 <figcaption>Zonas livres de tecnologia ajudam a reconectar com o mundo analógico.</figcaption>
+            </figure>
+
+            <h3>Benefícios a longo prazo</h3>
+            <p>Ao limpar o ruído digital, você abre espaço mental. De repente, você tem tempo para ler aquele livro, focar em um projeto complexo ou simplesmente estar presente em uma conversa sem sentir o impulso de checar o bolso a cada vibração fantasma.</p>
+            
+            <p>O objetivo final é simples: fazer com que a tecnologia sirva aos seus objetivos de vida, e não o contrário.</p>
+        </article>
+
+        <footer class="article-footer">
+            <div class="tags">
+                <a href="#" class="tag">Tecnologia</a>
+                <a href="#" class="tag">Bem-estar</a>
+                <a href="#" class="tag">Foco</a>
+            </div>
+        </footer>
+
+    </main>
+          <script src="scripts.js"></script>
+    <script>
+
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeBtn.querySelector('i');
+
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        // Verifica preferência salva
+        if (localStorage.getItem('theme') === 'dark') {
+            setDarkMode(true);
+        }
+        // Alterna ao clicar
+        themeBtn.addEventListener('click', () => {
+            setDarkMode(!document.body.classList.contains('dark-mode'));
+        });
+    </script>
+
+</body>
+</html>

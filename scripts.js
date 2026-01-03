@@ -159,3 +159,5 @@ modal.addEventListener('click', (e) => {
       .then(() => console.log("PWA Ativo!"))
       .catch((err) => console.log("Erro no PWA:", err));
   }
+  
+  // Lógica de Notificações
