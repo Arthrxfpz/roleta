@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalismo Digital: Menos é Mais | Revisão</title>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <script src="notificacoes.js"></script> 
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- VARIÁVEIS (DESIGN SYSTEM) --- */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --prose-width: 1200px;
+
+            /* Cores Base */
+            --bg-color: #f4f4f5;
+            --cordabarra: rgba(255, 255, 255, 0.85);
+            --text-primary: #18181b;
+            --text-secondary: #71717a;
+            --border-color: #e4e4e7;
+            --accent-color: #000000;
+            --danger-color: #ef4444;
+            
+            /* Cores das Notas */
+            --note-white: #ffffff;
+            --note-yellow: #fef3c7;
+            --note-green: #dcfce7;
+            --note-blue: #dbeafe;
+            --note-purple: #f3e8ff;
+            --note-red: #fee2e2;
+
+            /* UI Elements */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #09090b;
+            --cordabarra: rgba(9, 9, 11, 0.85);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --border-color: #27272a;
+            --accent-color: #60a5fa;
+
+            --note-white: #18181b;
+            --note-yellow: #422006;
+            --note-green: #14532d;
+            --note-blue: #1e3a8a;
+            --note-purple: #581c87;
+            --note-red: #7f1d1d;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
+        
+        <div class="nav-menu">
+            <a href="index.html">Início</a>
+            <a href="materias.html">Matérias</a>
+                        <a href="anotações.html" style="color: blue;">Anotações</a>
+            <a href="#">Contato</a>
+        </div>
+
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
+            </div>
+
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+        </div>
+    </nav>
+</header>
+<br>
+<br>
+<br>
+<style>
+    /* Container Principal */
+    .app-anotacoes {
+        max-width: var(--prose-width);
+        margin: 3rem auto;
+        padding: 0 2rem;
+        font-family: var(--font-main);
+        animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cabeçalho da Ferramenta */
+    .painel-controle {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        gap: 1.5rem;
+        background: var(--note-white);
+        padding: 1.5rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border-color);
+    }
+
+    .info-data {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-data h2 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .info-data span {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    /* Barra de Pesquisa Estilizada */
+    .campo-pesquisa {
+        position: relative;
+        flex: 1;
+        max-width: 450px;
+    }
+
+    .campo-pesquisa i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+    }
+
+    .input-moderno {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background: var(--bg-color);
+        border: 2px solid transparent;
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-family: var(--font-main);
+        transition: all 0.3s ease;
+    }
+
+    .input-moderno:focus {
+        outline: none;
+        background: var(--note-white);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Botões de Ação */
+    .grupo-botoes {
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .btn-acao {
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--radius-md);
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: var(--font-main);
+    }
+
+    .btn-primario {
+        background: var(--text-primary);
+        color: var(--bg-color);
+    }
+
+    .btn-primario:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .btn-perigo {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+    }
+
+    .btn-perigo:hover {
+        background: var(--danger-color);
+        color: white;
+    }
+
+    /* Grid de Notas */
+    .grade-notas {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Cartão da Nota */
+    .cartao-nota {
+        background: var(--note-white);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(0,0,0,0.03);
+        display: flex;
+        flex-direction: column;
+        min-height: 500px;
+        position: relative;
+        transition: all 0.3s ease;
+        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes scaleIn {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    .cartao-nota:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px -10px rgba(0,0,0,0.1);
+        z-index: 2;
+    }
+
+    /* Inputs dentro da nota (transparentes) */
+    .nota-titulo {
+        width: 100%;
+        border: none;
+        background: transparent;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        padding: 0.2rem 0;
+    }
+
+    .nota-conteudo {
+        flex-grow: 1;
+        width: 100%;
+        border: none;
+        background: transparent;
+        resize: none;
+        color: var(--text-secondary);
+        font-family: var(--font-main);
+        font-size: 1rem;
+        line-height: 1.6;
+        min-height: 150px;
+    }
+
+    .nota-titulo:focus, .nota-conteudo:focus {
+        outline: none;
+    }
+
+    /* Rodapé da Nota */
+    .nota-rodape {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .ferramentas-nota {
+        display: flex;
+        gap: 0.2rem;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+    }
+
+    .cartao-nota:hover .ferramentas-nota {
+        opacity: 1;
+    }
+
+    .btn-icone {
+        background: transparent;
+        border: none;
+        padding: 6px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        transition: all 0.2s;
+    }
+
+    .btn-icone:hover {
+        background: rgba(0,0,0,0.05);
+        color: var(--text-primary);
+    }
+
+    .btn-icone.deletar:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+    }
+
+    /* Paleta de Cores Flutuante */
+    .seletor-cores {
+        position: absolute;
+        bottom: 3.5rem;
+        right: 1rem;
+        background: var(--bg-color);
+        padding: 0.8rem;
+        border-radius: 50px;
+        display: flex;
+        gap: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        border: 1px solid var(--border-color);
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: all 0.3s;
+        z-index: 10;
+    }
+
+    .seletor-cores.ativo {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+    }
+
+    .ponto-cor {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .ponto-cor:hover {
+        transform: scale(1.2);
+    }
+
+    /* =======================================================
+       INTERFACES FLUTUANTES (MODAIS / TOASTS)
+       ======================================================= */
+    
+    /* Overlay Escuro com Blur */
+    .overlay-interface {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .overlay-interface.visivel {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Janela de Confirmação */
+    .janela-confirmacao {
+        background: var(--bg-color);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        transform: scale(0.9);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    .overlay-interface.visivel .janela-confirmacao {
+        transform: scale(1);
+    }
+
+    .janela-icone {
+        font-size: 3rem;
+        color: var(--danger-color);
+        margin-bottom: 1rem;
+    }
+
+    .janela-titulo {
+        font-size: 1.25rem;
+        color: var(--text-primary);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .janela-texto {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .janela-botoes {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    /* Toast (Aviso discreto no canto) */
+    .aviso-sistema-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
+
+    .cartao-aviso {
+        background: var(--text-primary);
+        color: var(--bg-color);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        transform: translateX(100px);
+        opacity: 0;
+        animation: slideIn 0.4s forwards;
+    }
+
+    @keyframes slideIn {
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+</style>
+
+<main class="app-anotacoes">
+    
+    <div class="painel-controle">
+        <div class="info-data">
+            <h2 id="dia-semana">Carregando...</h2>
+            <span id="data-completa">...</span>
+        </div>
+
+        <div class="campo-pesquisa">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" id="input-busca" class="input-moderno" placeholder="Pesquisar">
+        </div>
+
+        <div class="grupo-botoes">
+            <button class="btn-acao btn-perigo" onclick="sistemaNotas.confirmarLimpeza()">
+                <i class="ph ph-trash"></i> Apagar Tudo
+            </button>
+            <button class="btn-acao btn-primario" onclick="sistemaNotas.criarNota()">
+                <i class="ph ph-plus-circle"></i> Nova Nota
+            </button>
+        </div>
+    </div>
+
+    <div class="grade-notas" id="container-notas">
+        </div>
+
+</main>
+
+<div id="interface-confirmacao" class="overlay-interface">
+    <div class="janela-confirmacao">
+        <div class="janela-icone"><i class="ph ph-warning-circle"></i></div>
+        <div class="janela-titulo" id="titulo-modal">Tem certeza?</div>
+        <p class="janela-texto" id="texto-modal">Essa ação não pode ser desfeita.</p>
+        <div class="janela-botoes">
+            <button class="btn-acao" id="btn-cancelar-modal" style="background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-primary);">Cancelar</button>
+            <button class="btn-acao btn-perigo" id="btn-confirmar-modal">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<div class="aviso-sistema-container" id="container-avisos"></div>
+
+
+<script src="scripts.js"></script>
+<script>
+    /* ========================================================
+       LÓGICA JAVASCRIPT MODERNA
+       ======================================================== */
+
+    const sistemaNotas = {
+        dados: JSON.parse(localStorage.getItem('notas_app_moderno')) || [],
+        
+        iniciar() {
+            this.atualizarDatas();
+            this.renderizar();
+            
+            // Busca em tempo real
+            document.getElementById('input-busca').addEventListener('input', (e) => {
+                this.renderizar(e.target.value);
+            });
+
+            // Fecha modais ao clicar fora (cor e modal)
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.seletor-cores') && !e.target.closest('.btn-icone')) {
+                    document.querySelectorAll('.seletor-cores').forEach(el => el.classList.remove('ativo'));
+                }
+                if (e.target.classList.contains('overlay-interface')) {
+                    this.fecharModal();
+                }
+            });
+        },
+
+        atualizarDatas() {
+            const hoje = new Date();
+            const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            
+            document.getElementById('dia-semana').textContent = dias[hoje.getDay()];
+            document.getElementById('data-completa').textContent = `${hoje.getDate()} de ${meses[hoje.getMonth()]} de ${hoje.getFullYear()}`;
+        },
+
+        criarNota() {
+            const novaNota = {
+                id: Date.now().toString(),
+                titulo: '',
+                texto: '',
+                cor: 'var(--note-white)',
+                dataMod: new Date(),
+                chars: 0
+            };
+            
+            this.dados.unshift(novaNota);
+            this.salvar();
+            this.notificar('Nova anotação criada', 'ph-check');
+        },
+
+        atualizarNota(id, campo, valor) {
+            const nota = this.dados.find(n => n.id === id);
+            if (nota) {
+                nota[campo] = valor;
+                nota.dataMod = new Date(); // Objeto Date real
+                if(campo === 'texto') nota.chars = valor.length;
+                
+                this.salvarLocal(); 
+                
+                // Atualiza UI localmente sem recarregar tudo
+                const card = document.getElementById(`card-${id}`);
+                const dataFormatada = this.formatarData(nota.dataMod);
+                card.querySelector('.data-mod').textContent = dataFormatada;
+                card.querySelector('.contador-chars').textContent = `${nota.chars} carac.`;
+            }
+        },
+
+        // --- ALTERADO AQUI: FUNÇÃO DE DATA EXATA ---
+        formatarData(dataStr) {
+            const data = new Date(dataStr);
+            // Formata para: dd/mm/aaaa HH:mm (Ex: 03/10/2023 14:30)
+            return data.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        },
+
+        abrirPaleta(id) {
+            const paleta = document.getElementById(`paleta-${id}`);
+            // Fecha outras
+            document.querySelectorAll('.seletor-cores').forEach(p => {
+                if(p.id !== `paleta-${id}`) p.classList.remove('ativo');
+            });
+            paleta.classList.toggle('ativo');
+        },
+
+        mudarCor(id, corVar) {
+            const nota = this.dados.find(n => n.id === id);
+            if(nota) {
+                nota.cor = corVar;
+                this.salvar(); // Re-renderiza para aplicar estilo
+            }
+        },
+
+        baixarTxt(id) {
+            const nota = this.dados.find(n => n.id === id);
+            if(!nota) return;
+
+            const conteudo = `=== ${nota.titulo || 'Sem Título'} ===\nData: ${this.formatarData(nota.dataMod)}\n\n${nota.texto}`;
+            const blob = new Blob([conteudo], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${nota.titulo || 'anotacao'}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            this.notificar('Download iniciado', 'ph-download-simple');
+        },
+
+// --- SISTEMA DE CONFIRMAÇÃO ---
+        solicitarExclusao(id) {
+            this.abrirModal(
+                'Excluir anotação?', 
+                'Você perderá este conteúdo permanentemente.', 
+                () => {
+                    this.dados = this.dados.filter(n => n.id !== id);
+                    this.salvar();
+                    this.notificar('Nota excluída', 'ph-trash');
+                }
+            );
+        },
+
+        confirmarLimpeza() {
+            if(this.dados.length === 0) return this.notificar('Nada para apagar', 'ph-info');
+            
+            this.abrirModal(
+                'Apagar TUDO?', 
+                'Todas as suas anotações serão destruídas. Cuidado!', 
+                () => {
+                    this.dados = [];
+                    this.salvar();
+                    this.notificar('Tudo foi limpo', 'ph-trash');
+                }
+            );
+        },
+
+        abrirModal(titulo, texto, callbackConfirmacao) {
+            const modal = document.getElementById('interface-confirmacao');
+            document.getElementById('titulo-modal').textContent = titulo;
+            document.getElementById('texto-modal').textContent = texto;
+            
+            const btnConfirmar = document.getElementById('btn-confirmar-modal');
+            
+            const novoBtn = btnConfirmar.cloneNode(true);
+            btnConfirmar.parentNode.replaceChild(novoBtn, btnConfirmar);
+            
+            novoBtn.addEventListener('click', () => {
+                callbackConfirmacao();
+                this.fecharModal();
+            });
+
+            document.getElementById('btn-cancelar-modal').onclick = () => this.fecharModal();
+            
+            modal.classList.add('visivel');
+        },
+
+        fecharModal() {
+            document.getElementById('interface-confirmacao').classList.remove('visivel');
+        },
+        
+        // --- RENDERIZAÇÃO ---
+        salvarLocal() {
+            localStorage.setItem('notas_app_moderno', JSON.stringify(this.dados));
+        },
+
+        salvar() {
+            this.salvarLocal();
+            this.renderizar(document.getElementById('input-busca').value);
+        },
+
+        renderizar(termo = '') {
+            const container = document.getElementById('container-notas');
+            container.innerHTML = '';
+            
+            const filtradas = this.dados.filter(n => 
+                (n.titulo + n.texto).toLowerCase().includes(termo.toLowerCase())
+            );
+
+            if (filtradas.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-secondary);">
+                        <i class="ph ph-notepad" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>Nenhuma anotação encontrada.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtradas.forEach(nota => {
+                const el = document.createElement('div');
+                el.className = 'cartao-nota';
+                el.id = `card-${nota.id}`;
+                el.style.backgroundColor = nota.cor; 
+
+                const cores = ['var(--note-white)', 'var(--note-yellow)', 'var(--note-green)', 'var(--note-blue)', 'var(--note-purple)', 'var(--note-red)'];
+                
+                const htmlCores = cores.map(c => 
+                    `<div class="ponto-cor" style="background: ${c}" onclick="sistemaNotas.mudarCor('${nota.id}', '${c}')"></div>`
+                ).join('');
+
+                el.innerHTML = `
+                    <input class="nota-titulo" placeholder="Título..." value="${nota.titulo}" 
+                        oninput="sistemaNotas.atualizarNota('${nota.id}', 'titulo', this.value)">
+                    
+                    <textarea class="nota-conteudo" placeholder="Escreva aqui..." 
+                        oninput="sistemaNotas.atualizarNota('${nota.id}', 'texto', this.value)">${nota.texto}</textarea>
+                    
+                    <div class="seletor-cores" id="paleta-${nota.id}">
+                        ${htmlCores}
+                    </div>
+
+                    <div class="nota-rodape">
+                        <div>
+                            <span class="data-mod" style="display:block; font-weight:600">${this.formatarData(nota.dataMod)}</span>
+                            <span class="contador-chars">${nota.chars || 0} carac.</span>
+                        </div>
+                        <div class="ferramentas-nota">
+                            <button class="btn-icone" onclick="sistemaNotas.abrirPaleta('${nota.id}')" title="Cor"><i class="ph ph-palette"></i></button>
+                            <button class="btn-icone" onclick="sistemaNotas.baixarTxt('${nota.id}')" title="Salvar TXT"><i class="ph ph-floppy-disk"></i></button>
+                            <button class="btn-icone deletar" onclick="sistemaNotas.solicitarExclusao('${nota.id}')" title="Excluir"><i class="ph ph-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        },
+
+        // --- SISTEMA DE AVISOS VISUAIS ---
+        notificar(msg, icone = 'ph-check') {
+            const container = document.getElementById('container-avisos');
+            const aviso = document.createElement('div');
+            aviso.className = 'cartao-aviso';
+            aviso.innerHTML = `<i class="ph ${icone}" style="font-size: 1.3rem;"></i> ${msg}`;
+            container.appendChild(aviso);
+            
+            setTimeout(() => {
+                aviso.style.opacity = '0';
+                aviso.style.transform = 'translateY(10px)';
+                setTimeout(() => aviso.remove(), 400);
+            }, 3000);
+        }
+    };
+
+    // Inicializa
+    sistemaNotas.iniciar();
+
+</script>
+
+</body>
+</html>

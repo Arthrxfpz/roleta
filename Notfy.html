@@ -3,196 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Notificações</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Minimalismo Digital: Menos é Mais | Notas</title>
     
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <script src="notificacoes.js"></script> 
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
     <style>
+        /* --- VARIÁVEIS GERAIS (Mantendo base original + Cores App) --- */
         :root {
-            --primary: #6366f1;
-            --danger: #ef4444;
-            --text: #334155;
-            --bg: #ffffff;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --prose-width: 1200px; /* Largura ajustada para o Grid de notas */
+
+            /* Cores Base */
+            --bg-color: #f4f4f5;
+            --cordabarra: rgba(255, 255, 255, 0.85);
+            --text-primary: #18181b;
+            --text-secondary: #71717a;
+            --border-color: #e4e4e7;
+            --accent-color: #000000;
+            --danger-color: #ef4444;
+            
+            /* Cores das Notas (Tons Pastéis Modernos) */
+            --note-white: #ffffff;
+            --note-yellow: #fef3c7;
+            --note-green: #dcfce7;
+            --note-blue: #dbeafe;
+            --note-purple: #f3e8ff;
+            --note-red: #fee2e2;
+
+            /* UI Elements */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 20px; /* Alinhado ao topo/esquerda */
-            background-color: #f1f5f9;
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #09090b;
+            --cordabarra: rgba(9, 9, 11, 0.85);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --border-color: #27272a;
+            --accent-color: #60a5fa;
+
+            /* Cores das Notas Dark (Dessaturadas para conforto visual) */
+            --note-white: #18181b;
+            --note-yellow: #422006;
+            --note-green: #14532d;
+            --note-blue: #1e3a8a;
+            --note-purple: #581c87;
+            --note-red: #7f1d1d;
         }
 
-        .notification-wrapper {
-            position: relative;
-            display: inline-block;
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-primary); font-family: var(--font-main); overflow-x: hidden; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; transition: color 0.2s; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; background: none; }
+        input, textarea { font-family: inherit; border: none; outline: none; background: transparent; color: inherit; width: 100%; }
+
+        /* --- HEADER (EXATAMENTE COMO NO PEDIDO ORIGINAL - NÃO MEXER) --- */
+
+        /* Fim dos estilos do Header Original */
+
+        /* --- LAYOUT DO APP --- */
+        .app-container {
+            max-width: var(--prose-width);
+            margin: 100px auto 50px;
+            padding: 0 20px;
         }
 
-        /* Botão do Ícone */
-        .btn-notif {
-            background: var(--bg);
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
+        /* --- TOOLBAR SUPERIOR --- */
+        .toolbar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .welcome-header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; }
+        .welcome-header p { color: var(--text-secondary); font-size: 1rem; }
+
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--note-white);
+            padding: 10px 20px;
+            border-radius: 100px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .main-actions { display: flex; gap: 10px; align-items: center; }
+
+        .btn-ui {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
             transition: all 0.2s;
         }
+        .btn-primary { background: var(--text-primary); color: var(--bg-color); }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+        
+        .btn-ghost { color: var(--danger-color); background: transparent; }
+        .btn-ghost:hover { background: rgba(239, 68, 68, 0.1); }
 
-        .btn-notif:hover {
-            background: #f8fafc;
-            border-color: var(--primary);
+        /* --- GRID DE NOTAS --- */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        .btn-notif i {
-            font-size: 20px;
-            color: var(--text);
-        }
-
-        /* Contador Dinâmico */
-        .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 10px;
+        /* --- CARD DE NOTA --- */
+        .note-card {
+            background-color: var(--card-bg, var(--note-white));
+            border: 1px solid rgba(0,0,0,0.05); /* Borda sutil */
+            border-radius: var(--radius-lg);
+            padding: 24px;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid white;
+            flex-direction: column;
+            min-height: 280px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Pop-up */
-        .dropdown {
-            position: absolute;
-            top: 50px;
-            left: 0;
-            width: 300px;
-            background: var(--bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: none;
-            z-index: 99;
-            border: 1px solid #e2e8f0;
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            z-index: 2;
         }
 
-        .dropdown.active {
-            display: block;
-        }
-
-        .header {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f5f9;
+        .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        
+        .note-title {
+            font-size: 1.25rem;
             font-weight: 700;
-            font-size: 14px;
-            color: var(--text);
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+        .note-title::placeholder { opacity: 0.4; font-style: italic; }
+
+        .note-body {
+            flex-grow: 1;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            resize: none;
+            line-height: 1.7;
+            margin-bottom: 20px;
         }
 
-        .list {
-            max-height: 350px;
-            overflow-y: auto;
-        }
-
-        .item {
-            padding: 12px 15px;
+        .note-footer {
             display: flex;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--text);
-            border-bottom: 1px solid #f8fafc;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .meta-data { font-size: 0.75rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 4px; }
+        
+        /* Botões de Ação na Nota */
+        .card-actions { display: flex; gap: 5px; opacity: 0; transform: translateY(10px); transition: all 0.3s; }
+        .note-card:hover .card-actions { opacity: 1; transform: translateY(0); }
+
+        .icon-btn {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.5);
             transition: 0.2s;
         }
+        body.dark-mode .icon-btn { background: rgba(0,0,0,0.2); }
+        .icon-btn:hover { background: var(--text-primary); color: var(--bg-color); }
+        .icon-btn.delete:hover { background: var(--danger-color); color: white; }
 
-        .item:last-child { border: none; }
-
-        .item:hover {
-            background: #f8fafc;
+        /* --- COLOR PICKER --- */
+        .color-palette {
+            position: absolute;
+            bottom: 60px; right: 20px;
+            background: var(--note-white);
+            padding: 10px;
+            border-radius: 50px;
+            display: flex; gap: 8px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            z-index: 10;
+            animation: fadeIn 0.2s ease-out;
         }
+        .color-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .color-dot:hover { transform: scale(1.3); }
+        .hidden { display: none !important; }
 
-        .item i {
-            color: var(--primary);
-            margin-top: 3px;
+        /* --- CUSTOM MODAL (POP UP BONITO) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
 
-        .item-text b { display: block; font-size: 13px; }
-        .item-text small { color: #94a3b8; font-size: 11px; }
+        .modal-box {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%; max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.9); transition: transform 0.3s;
+            text-align: center;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
 
+        .modal-icon { font-size: 3rem; color: var(--danger-color); margin-bottom: 15px; }
+        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; }
+        .modal-desc { color: var(--text-secondary); margin-bottom: 25px; }
+        
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal { padding: 10px 24px; border-radius: 100px; font-weight: 600; font-size: 0.95rem; }
+        .btn-cancel { background: var(--border-color); color: var(--text-primary); }
+        .btn-confirm { background: var(--danger-color); color: white; }
+
+        /* Toast Notification (Aviso flutuante) */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary); color: var(--bg-color);
+            padding: 12px 24px; border-radius: 50px;
+            box-shadow: var(--shadow-lg); font-weight: 500;
+            z-index: 2000; transition: transform 0.3s;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .actions-bar { flex-direction: column; gap: 15px; align-items: stretch; border-radius: 20px; }
+            .search-wrapper { max-width: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+            .main-actions { justify-content: space-between; }
+            .card-actions { opacity: 1; transform: translateY(0); } /* Sempre visível no mobile */
+          
+        }
     </style>
 </head>
 <body>
 
-    <div class="notification-wrapper">
-        <button class="btn-notif" id="notifBtn">
-            <i class="fa-solid fa-bell"></i>
-            <span class="badge" id="counter">0</span>
-        </button>
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
+        
+        <div class="nav-menu">
+            <a href="index.html" style="color: blue;">Início</a>
+            <a href="marerias.html">Matérias</a>
+            <a href="#">Tech</a>
+            <a href="#">Contato</a>
+        </div>
 
-        <div class="dropdown" id="notifDropdown">
-            <div class="header">Notificações</div>
-            <div class="list" id="notifList">
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
                 
-                <a href="#" class="item">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <div class="item-text">
-                        <b>Novo seguidor</b>
-                        <small>Há 2 minutos</small>
-                    </div>
-                </a>
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
+            </div>
 
-                <a href="#" class="item">
-                    <i class="fa-solid fa-message"></i>
-                    <div class="item-text">
-                        <b>Nova mensagem de Bia</b>
-                        <small>Há 15 minutos</small>
-                    </div>
-                </a>
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+        </div>
+    </nav>
+</header>
+    <main class="app-container">
+        
+        <div class="toolbar-container">
+            <div class="welcome-header">
+                <h1 id="date-display">Suas Notas</h1>
+                <p>Capture ideias, listas e lembretes em um ambiente livre de distrações.</p>
+            </div>
 
-                <a href="#" class="item">
-                    <i class="fa-solid fa-bolt"></i>
-                    <div class="item-text">
-                        <b>Seu plano expira em 2 dias</b>
-                        <small>Há 1 hora</small>
-                    </div>
-                </a>
-                <a href="#" class="item">
-                    <i class="fa-solid fa-bolt"></i>
-                    <div class="item-text">
-                        <b>Seu plano expira em 2 dias</b>
-                        <small>Há 1 hora</small>
-                    </div>
-                </a>
+            <div class="actions-bar">
+                <div class="search-wrapper">
+                    <i class="ph ph-magnifying-glass" style="font-size: 1.2rem;"></i>
+                    <input type="text" id="search-input" placeholder="Buscar em suas notas...">
+                </div>
+                
+                <div class="main-actions">
+                    <button class="btn-ui btn-ghost" id="clear-all-btn">
+                        <i class="ph ph-trash"></i> Limpar Tudo
+                    </button>
+                    <button class="btn-ui btn-primary" id="add-note-btn">
+                        <i class="ph ph-plus"></i> Criar Nota
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="notes-grid" class="notes-grid">
+            </div>
+
+    </main>
+
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <i class="ph ph-warning-circle modal-icon"></i>
+            <div class="modal-title">Tem certeza?</div>
+            <p class="modal-desc" id="modal-text">Essa ação não poderá ser desfeita.</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" id="modal-cancel">Cancelar</button>
+                <button class="btn-modal btn-confirm" id="modal-confirm">Sim, apagar</button>
             </div>
         </div>
     </div>
 
-    <script>
-        const btn = document.getElementById('notifBtn');
-        const dropdown = document.getElementById('notifDropdown');
-        const list = document.getElementById('notifList');
-        const counter = document.getElementById('counter');
+    <div class="toast" id="toast">Ação realizada com sucesso!</div>
 
-        // Função para atualizar o contador automaticamente
-        function updateCounter() {
-            const total = list.querySelectorAll('.item').length;
-            counter.innerText = total;
-            
-            // Esconde o contador se não houver notificações
-            counter.style.display = total > 0 ? 'flex' : 'none';
+    <script>
+        // --- GERENCIAMENTO DE TEMA (DARK/LIGHT) ---
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeBtn.querySelector('i');
+        const body = document.body;
+
+        function setDarkMode(isDark) {
+            if (isDark) {
+                body.classList.add('dark-mode');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Inicializa tema
+        if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
+        themeBtn.addEventListener('click', () => setDarkMode(!body.classList.contains('dark-mode')));
+
+        // --- SISTEMA DE UI (MODAL E TOAST) ---
+        const modal = document.getElementById('confirm-modal');
+        const modalText = document.getElementById('modal-text');
+        const btnConfirm = document.getElementById('modal-confirm');
+        const btnCancel = document.getElementById('modal-cancel');
+        const toast = document.getElementById('toast');
+        
+        let onConfirmAction = null;
+
+        function showModal(message, action) {
+            modalText.textContent = message;
+            onConfirmAction = action;
+            modal.classList.add('active');
         }
 
-        // Abrir/Fechar
-        btn.onclick = (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('active');
-        };
+        function closeModal() {
+            modal.classList.remove('active');
+            onConfirmAction = null;
+        }
 
-        // Fechar ao clicar fora
-        window.onclick = () => dropdown.classList.remove('active');
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
-        // Atualiza assim que a página carrega
-        updateCounter();
+        btnCancel.addEventListener('click', closeModal);
+        btnConfirm.addEventListener('click', () => {
+            if(onConfirmAction) onConfirmAction();
+            closeModal();
+        });
+
+        // --- LÓGICA DO APP DE NOTAS ---
+
+        // Data no Header do App
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        document.getElementById('date-display').textContent = new Date().toLocaleDateString('pt-BR', options);
+
+        let notes = JSON.parse(localStorage.getItem('notes_db') || "[]");
+        const grid = document.getElementById('notes-grid');
+
+        const colors = [
+            { id: 'white', val: 'var(--note-white)' },
+            { id: 'yellow', val: 'var(--note-yellow)' },
+            { id: 'green', val: 'var(--note-green)' },
+            { id: 'blue', val: 'var(--note-blue)' },
+            { id: 'purple', val: 'var(--note-purple)' },
+            { id: 'red', val: 'var(--note-red)' }
+        ];
+
+        function save() {
+            localStorage.setItem('notes_db', JSON.stringify(notes));
+        }
+
+        function createNoteHTML(note) {
+            const el = document.createElement('div');
+            el.className = 'note-card';
+            el.style.setProperty('--card-bg', note.color);
+            
+            const dateObj = new Date(note.updated);
+            const dateStr = `${dateObj.getDate()}/${dateObj.getMonth()+1} • ${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+
+            el.innerHTML = `
+                <div class="note-header">
+                    <input type="text" class="note-title" value="${note.title}" placeholder="Sem título">
+                </div>
+                <textarea class="note-body" placeholder="Digite aqui...">${note.content}</textarea>
+                
+                <div class="note-footer">
+                    <div class="meta-data">
+                        <span class="char-c">${note.content.length} caracteres</span>
+                        <span class="date-u">${dateStr}</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="icon-btn color-trigger" title="Cor"><i class="ph ph-palette"></i></button>
+                        <button class="icon-btn download-trigger" title="Baixar"><i class="ph ph-download-simple"></i></button>
+                        <button class="icon-btn delete delete-trigger" title="Excluir"><i class="ph ph-trash"></i></button>
+                    </div>
+                </div>
+                
+                <div class="color-palette hidden">
+                    ${colors.map(c => `<div class="color-dot" style="background:${c.val}" data-color="${c.val}"></div>`).join('')}
+                </div>
+            `;
+
+ // Elementos internos
+            const titleIn = el.querySelector('.note-title');
+            const bodyIn = el.querySelector('.note-body');
+            const charSpan = el.querySelector('.char-c');
+            const dateSpan = el.querySelector('.date-u');
+            
+            // Auto-resize do textarea
+            const autoResize = (target) => {
+                target.style.height = 'auto';
+                target.style.height = target.scrollHeight + 'px';
+            };
+            // Executar uma vez ao carregar
+            setTimeout(() => autoResize(bodyIn), 0);
+
+            // Listener de Edição
+            const update = () => {
+                note.title = titleIn.value;
+                note.content = bodyIn.value;
+                note.updated = new Date().toISOString();
+                
+                charSpan.textContent = `${note.content.length} caracteres`;
+                const d = new Date();
+                dateSpan.textContent = `${d.getDate()}/${d.getMonth()+1} • ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+                
+                save();
+            };
+
+            titleIn.addEventListener('input', update);
+            bodyIn.addEventListener('input', (e) => {
+                update();
+                autoResize(e.target);
+            });
+
+            // Botão Download
+            el.querySelector('.download-trigger').addEventListener('click', () => {
+                const blob = new Blob([`Título: ${note.title}\n\n${note.content}`], {type: "text/plain"});
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `${note.title || 'nota'}.txt`;
+                link.click();
+                showToast("Download iniciado!");
+            });
+
+            // Botão Excluir (Com Modal)
+            el.querySelector('.delete-trigger').addEventListener('click', () => {
+                showModal("Deseja apagar esta nota permanentemente?", () => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        notes = notes.filter(n => n.id !== note.id);
+                        save();
+                        render();
+                        showToast("Nota removida.");
+                    }, 300);
+                });
+            });
+
+            // Lógica de Cores
+            const palette = el.querySelector('.color-palette');
+            const colorBtn = el.querySelector('.color-trigger');
+
+            colorBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.color-palette').forEach(p => p !== palette && p.classList.add('hidden'));
+                palette.classList.toggle('hidden');
+            });
+
+            el.querySelectorAll('.color-dot').forEach(dot => {
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const newColor = dot.getAttribute('data-color');
+                    el.style.setProperty('--card-bg', newColor);
+                    note.color = newColor;
+                    save();
+                    palette.classList.add('hidden');
+                });
+            });
+
+            // Fecha paleta ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!el.contains(e.target)) palette.classList.add('hidden');
+            });
+
+            return el;
+        }
+
+        function render() {
+            grid.innerHTML = '';
+            const term = document.getElementById('search-input').value.toLowerCase();
+            
+            // Filtra e ordena (mais recentes primeiro)
+            const filtered = notes
+                .filter(n => n.title.toLowerCase().includes(term) || n.content.toLowerCase().includes(term))
+                .sort((a, b) => new Date(b.updated) - new Date(a.updated));
+
+            filtered.forEach(n => grid.appendChild(createNoteHTML(n)));
+        }
+
+        // Criar Nova Nota
+        document.getElementById('add-note-btn').addEventListener('click', () => {
+            const newNote = {
+                id: Date.now(),
+                title: '',
+                content: '',
+                color: 'var(--note-white)',
+                updated: new Date().toISOString()
+            };
+            notes.unshift(newNote);
+            save();
+            render();
+            // Foca na nova nota criada (primeira da lista)
+            setTimeout(() => {
+                const firstCard = grid.querySelector('.note-card');
+                if(firstCard) firstCard.querySelector('.note-title').focus();
+            }, 100);
+        });
+
+        // Limpar Tudo (Com Modal)
+        document.getElementById('clear-all-btn').addEventListener('click', () => {
+            if(notes.length === 0) return showToast("Não há notas para apagar.");
+            
+            showModal("Isso vai apagar TODAS as suas notas. Tem certeza?", () => {
+                notes = [];
+                save();
+                render();
+                showToast("Tudo limpo!");
+            });
+        });
+
+        // Search Input
+        document.getElementById('search-input').addEventListener('input', render);
+
+        // Inicializa
+        render();
+
     </script>
 </body>
 </html>
