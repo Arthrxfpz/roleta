@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações e Preferências</title>
+        <script src="conf.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+      <script src="notificacoes.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* --- VARIÁVEIS (DESIGN SYSTEM ORIGINAL) --- */
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --prose-width: 1200px;
+
+            /* Cores Base */
+            --bg-color: #f4f4f5;
+            --cordabarra: rgba(255, 255, 255, 0.85);
+            --text-primary: #18181b;
+            --text-secondary: #71717a;
+            --border-color: #e4e4e7;
+            --accent-color: #000000;
+            --accent-soft: rgba(0,0,0, 0.05);
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            
+            /* Cores das Notas */
+            --note-white: #ffffff;
+            --card-hover: #fafafa;
+
+            /* UI Elements */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #09090b;
+            --cordabarra: rgba(9, 9, 11, 0.85);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --border-color: #27272a;
+            --accent-color: #60a5fa;
+            --accent-soft: rgba(96, 165, 250, 0.1);
+            --note-white: #18181b;
+            --card-hover: #27272a;
+        }
+
+        /* --- ESTILOS GERAIS --- */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding-bottom: 4rem;
+        }
+
+        /* Classes de Tamanho de Fonte */
+        body.font-small { font-size: 14px; }
+        body.font-standard { font-size: 16px; }
+        body.font-large { font-size: 20px; }
+
+        .config-container {
+            max-width: var(--prose-width);
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.03em;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* --- GRID DE CONFIGURAÇÕES --- */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .settings-card {
+            background: var(--note-white);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header i {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        /* Itens de Configuração */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .setting-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 0.2rem;
+        }
+
+        /* Inputs e Selects */
+        select.input-config {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-color);
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- BIG NUMBERS STATS --- */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-box {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* --- ANALYTICS LIST (O novo visual sem tabela) --- */
+        .analytics-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title-row h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Card do Dia */
+        .day-analytics-card {
+            background: var(--note-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .day-analytics-card:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+        }
+
+        /* Lado esquerdo do card (Data e Totais) */
+        .day-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-right: 1px solid var(--border-color);
+            padding-right: 1rem;
+        }
+
+        .day-date {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .day-weekday {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .day-stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .day-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .day-metric i { color: var(--text-secondary); }
+
+        /* Lado direito do card (Timeline de acessos) */
+        .day-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .timeline-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .timeline-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .time-pill {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .time-pill:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Responsividade para o card */
+        @media (max-width: 768px) {
+            .day-analytics-card {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .day-info {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 1rem;
+                padding-right: 0;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .day-meta {
+                text-align: right;
+            }
+        }
+
+        /* Botões */
+        .btn-config {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-family: var(--font-main);
+            text-decoration: none;
+        }
+
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+        .btn-outline:hover { background: var(--border-color); }
+
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+        .btn-danger:hover { background: var(--danger-color); color: white; }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; }
+        .toast {
+            background: var(--text-primary); color: var(--bg-color);
+            padding: 1rem 1.5rem; border-radius: 12px; margin-top: 10px;
+            animation: slideIn 0.3s forwards; display: flex; align-items: center; gap: 10px;
+            box-shadow: var(--shadow-md);
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        /* Blur class para Modo Zen */
+        body.zen-mode .stat-number, 
+        body.zen-mode .day-metric span {
+            filter: blur(4px);
+            transition: filter 0.3s;
+        }
+        body.zen-mode .stat-number:hover,
+        body.zen-mode .day-metric span:hover {
+            filter: blur(0);
+        }
+        
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">Revisão</div>
+        
+        <div class="nav-menu">
+            <a href="index.html">Início</a>
+            <a href="materias.html">Conteúdos</a>
+            <a href="anotações.html">Anotações</a>
+                        <a href="configuracoes.html" style="color: blue;">Configurações</a>
+          
+        </div>
+
+        <div class="controls">
+            <div class="notification-wrapper">
+                <button class="theme-btn" id="notif-btn">
+                    <i class="ph ph-bell"></i>
+                    <span class="notif-badge" id="notif-counter">0</span>
+                </button>
+                
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">Notificações</div>
+                    <div class="notif-list" id="notif-list">
+                        </div>
+                </div>
+            </div>
+
+            <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+            <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+        </div>
+    </nav>
+</header>
+<br>
+<br>
+<br>
+<main class="config-container">
+    
+    <div class="page-header">
+        <h1>Central de Controle</h1>
+        <p>Gerencie suas preferências e analise sua constância de estudos.</p>
+    <u><a href="#aviso">Clique para ler o aviso</a></u>
+    </div>
+
+    <div class="settings-grid">
+        
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="ph ph-paint-brush-broad"></i>
+                <h3>Aparência</h3>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Tamanho da Fonte</span>
+                    <span class="setting-desc">Ajuste global do texto</span>
+                </div>
+                <select id="font-size-select" class="input-config">
+                    <option value="small">Compacta</option>
+                    <option value="standard" selected>Padrão</option>
+                    <option value="large">Ampliada</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Reduzir Animações</span>
+                    <span class="setting-desc">Interface mais estática</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="reduce-motion-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="ph ph-brain"></i>
+                <h3>Foco & Produtividade</h3>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Modo Zen</span>
+                    <span class="setting-desc">Borra contadores para evitar ansiedade</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="zen-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Sons de Sistema</span>
+                    <span class="setting-desc">Feedback sonoro ao interagir</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-header">
+                <i class="ph ph-shield-check"></i>
+                <h3>Dados & Privacidade</h3>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Exportar Dados</span>
+                    <span class="setting-desc">Baixe seu histórico em JSON</span>
+                </div>
+                <button class="btn-config btn-outline" onclick="configApp.exportarDados()">
+                    <i class="ph ph-download-simple"></i> Baixar
+                </button>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <span class="setting-label">Resetar Tudo</span>
+                    <span class="setting-desc">Apaga todo histórico local</span>
+                </div>
+                <button class="btn-config btn-danger" onclick="configApp.resetarStats()">
+                    <i class="ph ph-trash"></i> Resetar
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="section-title-row">
+        <h2>Seu Desempenho</h2>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+            Dados armazenados localmente
+        </div>
+    </div>
+
+    <div class="settings-grid">
+        <div class="settings-card" style="border-left: 4px solid var(--accent-color);">
+            <div class="stats-overview">
+                <div class="stat-box">
+                    <span class="stat-number" id="total-time-global">0h 0m</span>
+                    <span class="stat-label">Tempo Total de Estudo</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="total-visits-global">0</span>
+                    <span class="stat-label">Sessões Iniciadas</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-card" style="justify-content: center; align-items: center; text-align: center; color: var(--text-secondary);">
+            <i class="ph ph-chart-bar" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+            <p style="font-size: 0.9rem; margin: 0;">Continue constante. <br>A consistência supera a intensidade.</p>
+        </div>
+    </div>
+
+    <div class="section-title-row" style="margin-top: 3rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i class="ph ph-calendar-check" style="font-size: 1.5rem; color: var(--accent-color);"></i>
+            <h2>Diário de Atividade</h2>
+        </div>
+        <button class="btn-config btn-outline" style="font-size: 0.8rem;" onclick="configApp.limparHistorico()">
+            Limpar Histórico
+        </button>
+    </div>
+
+    <div id="analytics-feed" class="analytics-section">
+        <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+            Carregando dados analíticos...
+        </div>
+    </div>
+    <br>
+    <br>
+    <hr>
+<div id="aviso">
+  <h2> Aviso</h2>
+         <p> Algumas configurações podem não funcionar corretamente como o esperado.<br>Devido essa ser uma versão beta, ainda estamos testando alguns dados.<br> Quaisquer erros vamos tentar corrigir o mais rápido possível para sua experiência ser a melhor possível dentro da plataforma e em breve, lançaremos uma versão final onde você possa personalizar ainda mais sua interface e preferências.
+        </p>
+</div>
+</main>
+
+<div class="toast-container" id="toast-container"></div>
+
+
+
+          <script src="scripts.js"></script>
+    <script>
+/* ========================================================
+   CONF.JS — CONFIGURAÇÕES GLOBAIS DO SITE (COMPLETO)
+   ======================================================== */
+
+(() => {
+
+    /* ===============================
+       HELPERS SEGUROS
+       =============================== */
+    const $ = (id) => document.getElementById(id);
+
+    /* ===============================
+       TEMA GLOBAL
+       =============================== */
+    let currentTheme = localStorage.getItem('theme') || 'light';
+
+    function applyTheme(theme) {
+        currentTheme = theme;
+
+        document.body.classList.toggle('dark-mode', theme === 'dark');
+        localStorage.setItem('theme', theme);
+
+        // Atualiza TODOS os ícones de tema do site
+        document.querySelectorAll('[data-theme-icon]').forEach(icon => {
+            icon.classList.remove('ph-moon', 'ph-sun');
+            icon.classList.add(theme === 'dark' ? 'ph-sun' : 'ph-moon');
+        });
+    }
+
+    function initTheme() {
+        applyTheme(currentTheme);
+
+        const btn = $('theme-toggle');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+            });
+        }
+    }
+
+    /* ===============================
+       CONFIG APP GLOBAL
+       =============================== */
+    const configApp = {
+
+        data: JSON.parse(localStorage.getItem('study_analytics')) || {
+            days: {},
+            settings: {
+                fontSize: 'standard',
+                reduceMotion: false,
+                zenMode: false,
+                soundEnabled: true
+            }
+        },
+
+        session: {
+            currentDateKey: new Date().toLocaleDateString('pt-BR'),
+            timer: null
+        },
+
+        /* ========== INIT ========== */
+        init() {
+            this.ensureToday();
+            this.trackLogin();
+            this.startTimer();
+            this.applySettingsUI();
+            this.setupListeners();
+            this.renderAnalytics();
+        },
+
+        /* ========== CORE ========== */
+        ensureToday() {
+            if (!this.data.days[this.session.currentDateKey]) {
+                this.data.days[this.session.currentDateKey] = {
+                    date: this.session.currentDateKey,
+                    totalSeconds: 0,
+                    logins: []
+                };
+            }
+        },
+
+        trackLogin() {
+            if (!sessionStorage.getItem('session_logged')) {
+                const time = new Date().toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                this.data.days[this.session.currentDateKey].logins.push(time);
+                sessionStorage.setItem('session_logged', 'true');
+                this.saveData();
+            }
+        },
+
+        startTimer() {
+            this.session.timer = setInterval(() => {
+                if (document.hidden) return;
+
+                const today = new Date().toLocaleDateString('pt-BR');
+                if (today !== this.session.currentDateKey) {
+                    this.session.currentDateKey = today;
+                    this.ensureToday();
+                }
+
+                this.data.days[this.session.currentDateKey].totalSeconds++;
+
+                if (this.data.days[this.session.currentDateKey].totalSeconds % 5 === 0) {
+                    this.saveData();
+                    this.renderAnalytics();
+                }
+            }, 1000);
+        },
+
+        /* ========== RENDER ========== */
+        renderAnalytics() {
+            const feed = $('analytics-feed');
+            if (!feed) return;
+
+            feed.innerHTML = '';
+
+            const days = Object.values(this.data.days).sort((a, b) =>
+                b.date.split('/').reverse().join('')
+                    .localeCompare(a.date.split('/').reverse().join(''))
+            );
+
+            let totalSeconds = 0;
+            let totalVisits = 0;
+
+            if (!days.length) {
+                feed.innerHTML =
+                    '<p style="text-align:center;opacity:.6">Nenhum dado ainda.</p>';
+                return;
+            }
+
+            days.forEach(day => {
+                totalSeconds += day.totalSeconds;
+                totalVisits += day.logins.length;
+
+                const [d, m, y] = day.date.split('/');
+                const weekday = new Date(y, m - 1, d)
+                    .toLocaleDateString('pt-BR', { weekday: 'long' });
+
+                const card = document.createElement('div');
+                card.className = 'day-analytics-card';
+                card.innerHTML = `
+                    <div class="day-info">
+                        <div>
+                            <div class="day-date">${d}/${m}</div>
+                            <div class="day-weekday">${weekday}</div>
+                        </div>
+                        <div class="day-stats-row">
+                            <div class="day-metric">
+                                <i class="ph ph-clock"></i>
+                                <span>${this.formatTime(day.totalSeconds)}</span>
+                            </div>
+                            <div class="day-metric">
+                                <i class="ph ph-sign-in"></i>
+                                <span>${day.logins.length}x</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                feed.appendChild(card);
+            });
+
+            $('total-time-global') &&
+                ($('total-time-global').textContent = this.formatTime(totalSeconds, true));
+
+            $('total-visits-global') &&
+                ($('total-visits-global').textContent = totalVisits);
+        },
+
+        /* ========== UTIL ========== */
+        formatTime(seconds, verbose = false) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return verbose ? `${h}h ${m}m` : (h ? `${h}h ${m}m` : `${m}m`);
+        },
+
+        saveData() {
+            localStorage.setItem('study_analytics', JSON.stringify(this.data));
+        },
+
+        /* ========== SETTINGS ========== */
+        setupListeners() {
+            $('font-size-select')?.addEventListener('change', e => {
+                this.data.settings.fontSize = e.target.value;
+                this.applySettingsUI();
+                this.saveData();
+                this.showToast('Fonte alterada');
+            });
+
+            $('reduce-motion-toggle')?.addEventListener('change', e => {
+                this.data.settings.reduceMotion = e.target.checked;
+                this.saveData();
+                this.showToast('Animações atualizadas');
+            });
+
+            $('zen-mode-toggle')?.addEventListener('change', e => {
+                this.data.settings.zenMode = e.target.checked;
+                this.applySettingsUI();
+                this.saveData();
+                this.showToast('Zen Mode atualizado');
+            });
+
+            $('sound-toggle')?.addEventListener('change', e => {
+                this.data.settings.soundEnabled = e.target.checked;
+                this.saveData();
+            });
+        },
+
+        applySettingsUI() {
+            const s = this.data.settings;
+
+            document.body.classList.remove(
+                'font-small',
+                'font-standard',
+                'font-large'
+            );
+            document.body.classList.add(`font-${s.fontSize}`);
+            document.body.classList.toggle('zen-mode', s.zenMode);
+
+            $('font-size-select') && ($('font-size-select').value = s.fontSize);
+            $('reduce-motion-toggle') && ($('reduce-motion-toggle').checked = s.reduceMotion);
+            $('zen-mode-toggle') && ($('zen-mode-toggle').checked = s.zenMode);
+            $('sound-toggle') && ($('sound-toggle').checked = s.soundEnabled);
+        },
+
+        /* ========== AÇÕES PÚBLICAS ========== */
+        exportarDados() {
+            const data = "data:text/json;charset=utf-8," +
+                encodeURIComponent(JSON.stringify(this.data));
+            const a = document.createElement('a');
+            a.href = data;
+            a.download = 'backup_estudos.json';
+            a.click();
+            this.showToast('Backup exportado');
+        },
+
+        resetarStats() {
+            if (confirm('Isso apagará TODO o histórico. Continuar?')) {
+                this.data.days = {};
+                this.session.currentDateKey =
+                    new Date().toLocaleDateString('pt-BR');
+                this.ensureToday();
+                this.saveData();
+                this.renderAnalytics();
+                this.showToast('Dados resetados');
+            }
+        },
+
+        limparHistorico() {
+            if (confirm('Limpar histórico visual?')) {
+                this.data.days = {};
+                this.saveData();
+                this.renderAnalytics();
+                this.showToast('Histórico limpo');
+            }
+        },
+
+        showToast(msg) {
+            const container = $('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="ph ph-check-circle"></i> ${msg}`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+    };
+
+    /* ===============================
+       INIT GLOBAL
+       =============================== */
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        configApp.init();
+    });
+
+    // Disponível globalmente para botões HTML
+    window.configApp = configApp;
+
+})();
+    </script>
+
+</body>
+</html>

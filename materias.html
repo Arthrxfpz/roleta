@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revisão | Central de Conteúdo</title>
+    <title>Central de Conteúdo</title>
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+    <script src="conf.js"></script>
     <link rel="stylesheet" href="style.css">
   <script src="notificacoes.js"></script>
    <style>
-/* --- VARIÁVEIS --- */
 :root {
     --font-main: 'Plus Jakarta Sans', sans-serif;
-    
     /* Light Mode */
     --bg-color: #ffffff;
     --card-bg: #ffffff;
@@ -154,10 +152,9 @@ button { cursor: pointer; border: none; outline: none; font-family: inherit; }
         
         <div class="nav-menu">
             <a href="index.html">Início</a>
-                        <a href="materias
-                        html" style="color: blue;">Matérias</a>
+                        <a href="materias.html" style="color: blue;">Conteúdos</a>
             <a href="anotações.html">Anotações</a>
-            <a href="#">Contato</a>
+            <a href="configuracoes.html">Configurações</a>
         </div>
 
         <div class="controls">
@@ -306,21 +303,56 @@ button { cursor: pointer; border: none; outline: none; font-family: inherit; }
             });
         }
 
-        // --- 3. MENU MOBILE ---
-        const hamburgerBtn = document.getElementById('hamburger');
-        const navMenu = document.querySelector('.nav-menu'); // Seleciona pela classe
+// --- 3. MENU MOBILE ---
+// --- 3. MENU MOBILE ---
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const hamburgerIcon = hamburger.querySelector('i');
 
-        if (hamburgerBtn && navMenu) {
-            hamburgerBtn.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-                const icon = hamburgerBtn.querySelector('i');
-                if (navMenu.classList.contains('active')) {
-                    icon.classList.replace('ph-list', 'ph-x');
-                } else {
-                    icon.classList.replace('ph-x', 'ph-list');
-                }
-            });
-        }
+// Função centralizada para abrir/fechar e travar o scroll
+function toggleMenu(isOpen) {
+    if (isOpen) {
+        navMenu.classList.add('active');
+        hamburgerIcon.classList.replace('ph-list', 'ph-x');
+        document.body.style.overflow = 'hidden'; // TRAVA O ARRASTE/SCROLL
+    } else {
+        navMenu.classList.remove('active');
+        hamburgerIcon.classList.replace('ph-x', 'ph-list');
+        document.body.style.overflow = 'auto';   // LIBERA O ARRASTE/SCROLL
+    }
+}
+
+// Alternar menu ao clicar no botão
+hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = navMenu.classList.contains('active');
+    toggleMenu(!isOpen);
+});
+
+// Fechar ao tocar fora
+document.addEventListener('click', (e) => {
+    if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+        toggleMenu(false);
+    }
+});
+
+// Lógica de Swipe para fechar
+let touchStartX = 0;
+
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const swipeDistance = touchEndX - touchStartX;
+
+    // Se o menu estiver ativo e o usuário deslizar para a esquerda (<-)
+    if (navMenu.classList.contains('active') && swipeDistance < -50) {
+        toggleMenu(false);
+    }
+}, { passive: true });
+
 
         // --- 4. MODAL ---
         const modal = document.getElementById('modal');
