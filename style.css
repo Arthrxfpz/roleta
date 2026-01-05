@@ -388,7 +388,15 @@ align-self: stretch;   /* ocupa a largura do container */
     }
 }
 
-    .hamburger { display: block; z-index: 9999; }
+    .hamburger {
+    display: none;
+}
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+        z-index: 9999;
+    }
+}
 
     .post-card h2 { font-size: 1.5rem; }
     .modal-content { padding: 2rem; }
