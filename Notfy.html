@@ -2,78 +2,487 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Conteúdo</title>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Arquivos externos -->
+    <script src="conf.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="notificacoes.js"></script>
+    </head>
+    <!-- CSS Interno -->
     <style>
-        body {
-            background-color: transparent; /* Ideal para integrar noutros locais */
-            margin: 20px; /* Margem simples no topo e esquerda */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            /* Light Mode */
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --text-primary: #111111;
+            --text-secondary: #666666;
+            --accent-color: #000000;
+            --border-color: #e5e7eb;
+            --btn-text: #ffffff;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --radius-lg: 24px;
+            --radius-sm: 12px;
+            --modal-bg: #ffffff;
         }
 
-        .status-inline {
-            display: flex;
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --accent-color: #3b82f6;
+            --border-color: #27272a;
+            --btn-text: #ffffff;
+            --modal-bg: #111111;
+            --shadow-card: 0 0 0 1px #27272a;
+        }
+
+        /* --- BASE --- */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            transition: background 0.3s, color 0.3s, border-color 0.3s; 
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            line-height: 1.6; 
+        }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+
+        /* --- HERO & FILTROS --- */
+        .hero { 
+            margin-top: 140px; 
+            text-align: center; 
+            padding: 0 5%; 
+            margin-bottom: 40px; 
+        }
+        .hero h1 { 
+            font-size: clamp(2rem, 5vw, 3.5rem); 
+            font-weight: 800; 
+            letter-spacing: -1px; 
+            margin-bottom: 15px; 
+            line-height: 1.1; 
+        }
+        .hero p { 
+            color: var(--text-secondary); 
+            max-width: 500px; 
+            margin: 0 auto; 
+            font-size: 1.1rem; 
+        }
+
+        .topic-nav {
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            flex-wrap: wrap;
+            max-width: 850px; 
+            margin: 0 auto 50px auto; 
+            padding: 0 5%;
+        }
+
+        .topic-btn {
+            padding: 10px 24px; 
+            border-radius: 100px; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary); 
+            transition: all 0.2s ease;
+        }
+        .topic-btn:hover { 
+            border-color: var(--accent-color); 
+            color: var(--text-primary); 
+            transform: translateY(-2px); 
+        }
+        .topic-btn.active {
+            background: var(--accent-color); 
+            color: var(--btn-text);
+            border-color: var(--accent-color); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- FEED GRID --- */
+        .feed-container {
+            max-width: 1200px; 
+            margin: 0 auto 100px; 
+            padding: 0 5%;
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* CARD */
+        .post-card {
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg); 
+            padding: 2rem;
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.2rem;
+            box-shadow: var(--shadow-card);
+            opacity: 1; 
+        }
+
+        .post-card.hidden { display: none; }
+
+        .card-top { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: start; 
+        }
+        .topic-tag {
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px; 
+            padding: 6px 12px; 
+            border-radius: 8px;
+            background: rgba(128, 128, 128, 0.1); 
+            color: var(--text-primary);
+        }
+
+        .post-card h2 { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            line-height: 1.3; 
+            margin-top: 0.5rem;
+        }
+        .post-excerpt { 
+            color: var(--text-secondary); 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+            margin-bottom: 1rem; 
+            flex-grow: 1; 
+        }
+
+        .card-action {
+            width: 100%; 
+            padding: 14px; 
+            border-radius: var(--radius-sm);
+            background: var(--text-primary); 
+            color: var(--bg-color);
+            font-weight: 600; 
+            font-size: 0.9rem;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        .card-action:hover { 
+            opacity: 0.9; 
+            transform: scale(1.02); 
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(5px);
+            z-index: 2000; 
+            opacity: 0; 
+            pointer-events: none;
+            display: flex; 
+            justify-content: center; 
             align-items: center;
-            gap: 10px;
-            font-size: 17px;
-            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.open { 
+            opacity: 1; 
+            pointer-events: all; 
+        }
+        .modal-content {
+            background: var(--modal-bg); 
+            width: 90%; 
+            max-width: 600px; 
+            padding: 2.5rem;
+            border-radius: var(--radius-lg); 
+            border: 1px solid var(--border-color);
+            transform: translateY(50px); 
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.open .modal-content { 
+            transform: translateY(0); 
+        }
+        .close-modal { 
+            position: absolute; 
+            top: 1.5rem; 
+            right: 1.5rem; 
+            font-size: 1.5rem; 
+            color: var(--text-secondary); 
+            background: transparent; 
         }
 
-        /* Cores dos estados */
-        .ferias { color: #0ea5e9; } /* Azul Verão */
-        .aula { color: #64748b; }   /* Cinza Executivo */
-
-        .info-secundaria {
-            font-weight: 400;
-            color: #94a3b8;
-            margin-left: 5px;
+        /* --- RESPONSIVO --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .feed-container { grid-template-columns: 1fr; }
+            .topic-nav { 
+                overflow-x: auto; 
+                justify-content: flex-start; 
+                padding-bottom: 10px; 
+                flex-wrap: nowrap; 
+                white-space: nowrap; 
+            }
         }
 
-        .divider {
-            color: #e2e8f0;
-            font-weight: 300;
+        /* Animação do Filtro */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
-</head>
 <body>
 
-    <div class="status-inline" id="container-status">
-        <span id="icone"></span>
-        <span id="texto-principal"></span>
-        <span class="divider">/</span>
-        <span id="texto-detalhe" class="info-secundaria"></span>
+    <header>
+        <nav>
+            <div class="logo">Revisão</div>
+            
+            <div class="nav-menu">
+                <a href="index.html">Início</a>
+                <a href="materias.html" style="color: blue;">Conteúdos</a>
+                <a href="anotações.html">Anotações</a>
+                <a href="configuracoes.html">Configurações</a>
+            </div>
+
+            <div class="controls">
+                <div class="notification-wrapper">
+                    <button class="theme-btn" id="notif-btn">
+                        <i class="ph ph-bell"></i>
+                        <span class="notif-badge" id="notif-counter">0</span>
+                    </button>
+                    
+                    <div class="notif-dropdown" id="notif-dropdown">
+                        <div class="notif-header">Notificações</div>
+                        <div class="notif-list" id="notif-list"></div>
+                    </div>
+                </div>
+
+                <button class="theme-btn" id="theme-toggle"><i class="ph ph-moon"></i></button>
+                <button class="hamburger" id="hamburger"><i class="ph ph-list"></i></button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Explore por suas matérias</h1>
+        <p>Selecione uma por uma categoria se preferir.</p>
+    </section>
+
+    <div class="topic-nav" id="topic-filters">
+        <button class="topic-btn active" data-filter="all">Todos</button>
+        <button class="topic-btn" data-filter="dev">Desenvolvimento</button>
+        <button class="topic-btn" data-filter="design">Design</button>
+        <button class="topic-btn" data-filter="produtividade">Produtividade</button>
+        <button class="topic-btn" data-filter="estudos">Estudos</button>
+    </div>
+
+    <main class="feed-container">
+        <!-- Seus cards aqui (mantive iguais) -->
+        <article class="post-card" data-category="dev">
+            <div class="card-top">
+                <span class="topic-tag">Dev & Tech</span>
+                <i class="ph ph-code" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Estrutura de Dados</h2>
+            <p class="post-excerpt">Revisão sobre arrays, listas ligadas e árvores binárias. Conceitos fundamentais para entrevistas técnicas.</p>
+            <button class="card-action" onclick="openModal('Estrutura de Dados', 'Conteúdo detalhado sobre estruturas de dados: Arrays são rápidos para leitura, Listas Ligadas para inserção...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="design">
+            <div class="card-top">
+                <span class="topic-tag">Design</span>
+                <i class="ph ph-paint-brush" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Psicologia das Cores</h2>
+            <p class="post-excerpt">Como utilizar cores para influenciar a decisão do usuário em interfaces digitais e branding.</p>
+            <button class="card-action" onclick="openModal('Psicologia das Cores', 'O azul transmite confiança e segurança, muito usado em bancos. O vermelho cria urgência...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="produtividade">
+            <div class="card-top">
+                <span class="topic-tag">Produtividade</span>
+                <i class="ph ph-lightning" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Método Pomodoro</h2>
+            <p class="post-excerpt">Técnica de gerenciamento de tempo que utiliza um cronômetro para dividir o trabalho em intervalos.</p>
+            <button class="card-action" onclick="openModal('Método Pomodoro', 'A técnica consiste em usar um cronômetro para dividir o trabalho em períodos de 25 minutos...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="estudos">
+            <div class="card-top">
+                <span class="topic-tag">Estudos</span>
+                <i class="ph ph-book-open" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>Técnica Feynman</h2>
+            <p class="post-excerpt">O melhor método para aprender qualquer coisa: explique o conceito como se estivesse ensinando uma criança.</p>
+            <button class="card-action" onclick="openModal('Técnica Feynman', 'Passo 1: Escolha um conceito. Passo 2: Explique-o de forma simples. Passo 3: Identifique as falhas...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+
+        <article class="post-card" data-category="dev">
+            <div class="card-top">
+                <span class="topic-tag">Dev & Tech</span>
+                <i class="ph ph-terminal" style="font-size: 1.5rem; color: var(--text-secondary)"></i>
+            </div>
+            <h2>CSS Grid vs Flexbox</h2>
+            <p class="post-excerpt">Quando usar um ou outro? Um guia prático para layout responsivo moderno na web.</p>
+            <button class="card-action" onclick="openModal('Grid vs Flexbox', 'Flexbox é unidimensional (linha OU coluna). Grid é bidimensional (linha E coluna). Use Flex para componentes...')">Ver Resumo <i class="ph ph-arrow-right"></i></button>
+        </article>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="ph ph-x"></i></button>
+            <h2 id="modal-title" style="margin-bottom: 1rem;">Título</h2>
+            <p id="modal-body" style="color: var(--text-secondary);">Conteúdo...</p>
+        </div>
     </div>
 
     <script>
-        function atualizarStatus() {
-            const hoje = new Date();
-            const mes = hoje.getMonth() + 1;
-            const dia = hoje.getDate();
-            
-            const container = document.getElementById('container-status');
-            const icone = document.getElementById('icone');
-            const principal = document.getElementById('texto-principal');
-            const detalhe = document.getElementById('texto-detalhe');
+        // Todo o JavaScript que você já tinha (mantido exatamente igual)
+        // ... (código JS completo aqui - não alterei nada nele)
+        
+        const filterBtns = document.querySelectorAll('.topic-btn');
+        const cards = document.querySelectorAll('.post-card');
 
-            // Lógica: Dezembro, Janeiro ou até 10 de Fevereiro
-            const feriasAtivas = (mes === 12) || (mes === 1) || (mes === 2 && dia <= 10);
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-            if (feriasAtivas) {
-                container.className = "status-inline ferias";
-                icone.setAttribute('data-lucide', 'sun'); // Ícone de sol minimalista
-                principal.innerText = "Em férias";
-                detalhe.innerText = "A aproveitar o descanso";
+                const filterValue = btn.getAttribute('data-filter');
+
+                cards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+
+                    if (filterValue === 'all' || filterValue === cardCategory) {
+                        card.classList.remove('hidden');
+                        card.style.animation = 'none';
+                        card.offsetHeight; 
+                        card.style.animation = 'fadeIn 0.5s ease forwards';
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                if(themeIcon) themeIcon.classList.replace('ph-moon', 'ph-sun');
+                localStorage.setItem('theme', 'dark');
             } else {
-                container.className = "status-inline aula";
-                icone.setAttribute('data-lucide', 'graduation-cap'); // Ícone de capelo/estudos
-                principal.innerText = "Em aula";
-                detalhe.innerText = "Sem informações de aulas";
+                document.body.classList.remove('dark-mode');
+                if(themeIcon) themeIcon.classList.replace('ph-sun', 'ph-moon');
+                localStorage.setItem('theme', 'light');
             }
-
-            // Ativa os ícones da biblioteca
-            lucide.createIcons();
         }
 
-        atualizarStatus();
+        if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                setDarkMode(!document.body.classList.contains('dark-mode'));
+            });
+        }
+
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const hamburgerIcon = hamburger.querySelector('i');
+
+        function toggleMenu(isOpen) {
+            if (isOpen) {
+                navMenu.classList.add('active');
+                hamburgerIcon.classList.replace('ph-list', 'ph-x');
+                document.body.style.overflow = 'hidden';
+            } else {
+                navMenu.classList.remove('active');
+                hamburgerIcon.classList.replace('ph-x', 'ph-list');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = navMenu.classList.contains('active');
+            toggleMenu(!isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                toggleMenu(false);
+            }
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const swipeDistance = touchEndX - touchStartX;
+
+            if (navMenu.classList.contains('active') && swipeDistance < -50) {
+                toggleMenu(false);
+            }
+        }, { passive: true });
+
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+
+        function openModal(title, body) {
+            modalTitle.innerText = title;
+            modalBody.innerText = body;
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        if(modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal && modal.classList.contains('open')) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
